@@ -82,6 +82,14 @@ class Bin:
             self.width * self.height * self.depth, self.number_of_decimals
         )
 
+    def get_efficacy(self):
+        total_volume = 0
+
+        for item in self.items:
+            total_volume += item.get_volume()  # aggregate volume of packed items
+
+        return total_volume / self.get_volume()   # calculates efficacy of packing to bin
+
     def get_total_weight(self):
         total_weight = 0
 
@@ -94,6 +102,7 @@ class Bin:
         fit = False
         valid_item_position = item.position
         item.position = pivot
+        items_volume = 0
 
         for i in range(0, len(RotationType.ALL)):
             item.rotation_type = i
@@ -118,6 +127,8 @@ class Bin:
                     return fit
 
                 self.items.append(item)
+
+
 
             if not fit:
                 item.position = valid_item_position
@@ -185,6 +196,7 @@ class Packer:
                     fitted = True
                     break
             if fitted:
+
                 break
 
         if not fitted:

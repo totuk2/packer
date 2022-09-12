@@ -1,0 +1,34 @@
+{
+  "item1": {
+    "name": "item1",
+    "quantity": 5,
+    "width": 2,
+    "hight": 4,
+    "depth": 3,
+    "weight": 2
+  },
+  "item2": {
+    "name": "item2",
+    "quantity": 10,
+    "width": 12,
+    "hight": 14,
+    "depth": 13,
+    "weight": 3
+  },
+  "item3": {
+    "name": "item3",
+    "quantity": 1,
+    "width": 22,
+    "hight": 14,
+    "depth": 7,
+    "weight": 4
+  },
+  "item4": {
+    "name": "item4",
+    "quantity": 2,
+    "width": 20,
+    "hight": 40,
+    "depth": 7,
+    "weight": 7
+  }
+}

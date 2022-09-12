@@ -1,0 +1,38 @@
+{
+  "box1": {
+    "name": "box1",
+    "width": 60,
+    "hight": 30,
+    "depth": 20,
+    "max_weight": 90
+  },
+  "box2": {
+    "name": "box2",
+    "width": 40,
+    "hight": 20,
+    "depth": 10,
+    "max_weight": 160
+  },
+  "box3": {
+    "name": "box3",
+    "width": 60,
+    "hight": 40,
+    "depth": 10,
+    "max_weight": 190
+  },
+  "box4": {
+    "name": "box4",
+    "width": 40,
+    "hight": 60,
+    "depth": 40,
+    "max_weight": 200
+  },
+    "box5": {
+    "name": "box5",
+    "width": 90,
+    "hight": 90,
+    "depth": 90,
+    "max_weight": 220
+  }
+}
+
