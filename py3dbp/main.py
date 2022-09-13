@@ -63,6 +63,7 @@ class Bin:
         self.items = []
         self.unfitted_items = []
         self.number_of_decimals = DEFAULT_NUMBER_OF_DECIMALS
+        self.efficacy = 0
 
     def format_numbers(self, number_of_decimals):
         self.width = set_to_decimal(self.width, number_of_decimals)
@@ -156,6 +157,11 @@ class Packer:
 
         return self.items.append(item)
 
+    def remove_item(self, item):
+        self.total_items = len(self.items) - 1
+
+        return self.items.remove(item)
+
     def pack_to_bin(self, bin, item):
         fitted = False
 
@@ -222,6 +228,7 @@ class Packer:
         for bin in self.bins:
             for item in self.items:
                 self.pack_to_bin(bin, item)
+            bin.efficacy = bin.get_efficacy()
 
             if distribute_items:
                 for item in bin.items:

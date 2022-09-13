@@ -25,57 +25,40 @@ def refresh_box_types(file="boxes.json"):
 
 def refresh_items(file="items.json"):
     """"""
+    try:
+        with open(file) as f:
+            items = json.load(f)
+    except FileNotFoundError:
+        print("File not found.")
 
-    if first_iteration:
-        try:
-            with open(file) as f:
-                items = json.load(f)
-        except FileNotFoundError:
-            print("File not found.")
-
-        for item in items:
-            for number in range(items[item]['quantity']):
-                packer.add_item(                # Item(name, width, height, depth, weight)
-                    Item(items[item]['name'],
-                        items[item]['width'],
-                        items[item]['hight'],
-                        items[item]['depth'],
-                        items[item]['weight']))
-    else:
-        print(packer.items)
-
-
-first_iteration = True
+    for item in items:
+        for number in range(items[item]['quantity']):
+            packer.add_item(                # Item(name, width, height, depth, weight)
+                Item(items[item]['name'],
+                    items[item]['width'],
+                    items[item]['hight'],
+                    items[item]['depth'],
+                    items[item]['weight']))
 
 refresh_box_types()
 refresh_items()
 
-packer.pack()
+packer.pack(distribute_items=True)
 
 for b in packer.bins:
     print(":::::::::::", b.string())
 
     print("FITTED ITEMS:")
-    # vol = 0
+    vol = 0
     for item in b.items:
         print("====> ", item.string())
+        vol += item.get_volume()
+    print(f"Usage volume: {vol}, which is {vol / b.get_volume() *100:.2f}%")
+    print(f"Usage weight: {b.get_total_weight()} / {b.max_weight}, which is {b.get_total_weight()/ b.max_weight * 100:.2f}%")
+
+    # print("\nUNFITTED ITEMS:")
+    # vol = 0
+    # for item in b.unfitted_items:
     #     vol += item.get_volume()
-    # print(f"Usage volume: {vol}, which is {vol / b.get_volume() *100:.2f}%")
-    # print(f"Usage weight: {b.get_total_weight()} / {b.max_weight}, which is {b.get_total_weight()/ b.max_weight * 100:.2f}%")
-
-    print("\nUNFITTED ITEMS:")
-    vol = 0
-    for item in b.unfitted_items:
-        # vol += item.get_volume()
-        print("====> ", item.string())
-        first_iteration = False
-
+    #     print("====> ", item.string())
     # print(f"Unfitted volume: {vol}")
-
-
-        print("\n---------------------------------------------------")
-
-        print(("------------  ITERATION  ------  2  ----------------"))
-
-        for item_unfitted in b.unfitted_items:
-            print("end ")
