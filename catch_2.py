@@ -57,6 +57,12 @@ unfitted_items = 1
 while unfitted_items != 0:
     packing_efficacy = 0
 
+    for b in packer.bins:
+       b.items.clear()
+       b.unfitted_items.clear()
+
+       # pass # clear all items in each of the bins
+
     packer.pack()
     best_bin = max(packer.bins, key=lambda b: b.efficacy)    # select the best packed bin
     print(best_bin.name, best_bin.efficacy)
