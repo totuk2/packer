@@ -158,16 +158,16 @@ class Packer:
         return self.items.append(item)
 
     def clear_bins(self, type='a'):
-        """Clear Packer bins. Argument type: 'a' = all (default) | 'f' = fitted | 'u' = unfitted """
-        types = ['a', 'f', 'u']
+        """Clear Packer bins. Argument type can take values: "all" (default) | "fitted" | "unfitted" """
+        types = ['all', 'fitted', 'unfitted']
         if type not in types:
             raise ValueError("Invalid bin type. Expected one of %s" %types)
         else:
-            if type == 'a':
+            if type == 'all':
                 for b in self.bins:
                     b.items.clear()
                     b.unfitted_items.clear()
-            if type == 'f':
+            if type == 'fitted':
                 for b in self.bins:
                     b.items.clear()
             else:
