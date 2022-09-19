@@ -4,4 +4,4 @@ dist
 *.egg-info
 .pypirc
 .vscode
-.ideas
+.idea
