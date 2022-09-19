@@ -43,7 +43,7 @@ for bin in bins:
 # convert basket to Item objects and add to packer instance
 for item in items:
     for number in range(items[item]['quantity']):
-        packer.add_item(  # Item(name, width, height, depth, weight)
+        packer.add_item(                                    # Item(name, width, height, depth, weight)
             Item(items[item]['name'],
                  items[item]['width'],
                  items[item]['hight'],
@@ -56,6 +56,7 @@ fitted_items = []   # list of solutions
 unfitted_items = 1
 while unfitted_items != 0:
     packing_efficacy = 0
+    packer.clear_bins()                                     # clear all items in each of the bins
 
     packer.pack()
     best_bin = max(packer.bins, key=lambda b: b.efficacy)    # select the best packed bin
