@@ -1,5 +1,8 @@
 from .constants import RotationType, Axis
 from .auxiliary_methods import intersect, set_to_decimal
+import copy
+from rich import inspect, print
+
 
 # required to plot a representation of Bin and contained items
 import matplotlib.pyplot as plt
@@ -66,6 +69,7 @@ class Bin:
         self.depth = depth
         self.max_weight = max_weight
         self.items = []
+        self.items_to_plot = []
         self.unfitted_items = []
         self.number_of_decimals = DEFAULT_NUMBER_OF_DECIMALS
         self.efficacy = 0
@@ -132,6 +136,8 @@ class Bin:
                     fit = False
                     return fit
 
+                item_copy = copy.deepcopy(item)
+                self.items_to_plot.append(item_copy)
                 self.items.append(item)
 
 
@@ -159,7 +165,7 @@ class Bin:
         ax.plot3D([x+dx, x+dx], [y+dy, y+dy], [z, z+dz], **kwargs)
         ax.plot3D([x+dx, x+dx], [y, y], [z, z+dz], **kwargs)
 
-    def plotBoxAndItems(self,title=""):
+    def plotBoxAndItems(self, title="", export_to_img=True):
         """ side effective. Plot the Bin and the items it contains. """
         fig = plt.figure()
         axGlob = plt.axes(projection='3d')
@@ -168,15 +174,18 @@ class Bin:
         # . plot intems in the box
         colorList = ["black", "blue", "magenta", "orange"]
         counter = 0
-        for item in self.items:
+        for item in self.items_to_plot:
             x,y,z = item.position
             color = colorList[counter % len(colorList)]
             self._plotCube(axGlob, float(x), float(y), float(z),
-                     float(item.width), float(item.height), float(item.depth),
-                     color=color)
+                           float(item.width), float(item.height), float(item.depth),
+                           color=color)
             counter = counter + 1
         plt.title(title)
+        if export_to_img:
+            plt.savefig(f'reports/{self.name}_{self.efficacy:.3f}.png' , format="png")
         plt.show()
+        self.items_to_plot.clear()
 
 class Packer:
     def __init__(self):
@@ -279,8 +288,11 @@ class Packer:
         )
 
         for bin in self.bins:
+            print("-----------------")  #debug purposes
+            print(inspect(bin))                #debug
             for item in self.items:
                 self.pack_to_bin(bin, item)
+                print(inspect(item))      #debug
             bin.efficacy = bin.get_efficacy()
 
             if distribute_items:

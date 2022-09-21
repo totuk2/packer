@@ -1,6 +1,8 @@
 import json
-from py3dbp import Item, Bin, Packer
+from py3dbp.main import Item, Bin, Packer
 from rich import print, inspect
+from rich.console import Console
+from rich.tree import Tree
 
 
 def refresh_box_types(file="boxes.json"):
@@ -25,8 +27,9 @@ def refresh_items(file="items.json"):
     return items
 
 
+console = Console(record=True, color_system="windows")
 packer = Packer()
-
+tree = Tree("Packed items", highlight=True)
 
 # import items from basket and box types
 bins = refresh_box_types()
@@ -51,23 +54,26 @@ for item in items:
                  items[item]['depth'],
                  items[item]['weight']))
 
-fitted_items = []   # list of solutions
+packer.pack()
 
-# pack until no more unfitted items
-unfitted_items = 1
-while unfitted_items != 0:
-    packing_efficacy = 0
-    packer.clear_bins()                                     # clear all items in each of the bins
+# best_bin = max(packer.bins, key=lambda b: b.efficacy)    # select the best packed bin
 
-    packer.pack()
-    best_bin = max(packer.bins, key=lambda b: b.efficacy)    # select the best packed bin
+for b in packer.bins:
+    # console.print(inspect(b, title=f'[red bold] Inspecting {b.name} [/red bold', sort=False))
+    bins_tree = tree.add(f'{b.name} in {b}; w:{b.width}; h:{b.height}; d:{b.depth}; '
+                         f'packed: {len(b.items)} of {len(b.items+b.unfitted_items)}')
 
+    for item in b.items_to_plot:
+        bins_tree.add(f'[blue]{item.name}[/blue] in {item} /position/ w:{item.position[0]}-{item.position[0]+item.width} x '
+                      f'h:{item.position[1]}-{item.position[1]+item.height} x '
+                      f'd:{item.position[2]}-{item.position[2]+item.depth}')
+        # console.print(inspect(item, title=f'[red bold] Inspecting {item.name} {item}: [/red bold]', sort=False))
+    b.plotBoxAndItems(f'{b.name}, efficacy:{b.get_efficacy()*100:.2f}%', export_to_img=True)
 
-    # print(best_bin.name, best_bin.efficacy)
-    unfitted_items = len(best_bin.unfitted_items)
-    best_bin.plotBoxAndItems()
-    inspect(best_bin)
-    for item in best_bin.items:
-        print(item.string())
-        fitted_items.append((item, best_bin.name))           # add item+bin to solutions
-        packer.remove_item(item)                             # remove from items to be packed and reiterate
+console.print(tree)
+console.save_html('reports/packing_inspect.html')
+
+# print(best_bin.name, best_bin.efficacy)
+# unfitted_items = len(best_bin.unfitted_items)
+# best_bin.plotBoxAndItems()
+# inspect(best_bin)
