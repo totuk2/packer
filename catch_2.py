@@ -57,11 +57,9 @@ fitted_items = []   # list of solutions
 unfitted_items = 1
 while unfitted_items != 0:
     packing_efficacy = 0
-    packer.clear_bins()                                     # clear all items in each of the bins
 
     packer.pack()
     best_bin = max(packer.bins, key=lambda b: b.efficacy)    # select the best packed bin
-
 
     # print(best_bin.name, best_bin.efficacy)
     unfitted_items = len(best_bin.unfitted_items)
@@ -71,3 +69,5 @@ while unfitted_items != 0:
         print(item.string())
         fitted_items.append((item, best_bin.name))           # add item+bin to solutions
         packer.remove_item(item)                             # remove from items to be packed and reiterate
+
+    packer.clear_bins()                                     # clear all items in each of the bins

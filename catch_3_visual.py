@@ -63,7 +63,7 @@ for b in packer.bins:
     bins_tree = tree.add(f'{b.name} in {b}; w:{b.width}; h:{b.height}; d:{b.depth}; '
                          f'packed: {len(b.items)} of {len(b.items+b.unfitted_items)}')
 
-    for item in b.items_to_plot:
+    for item in b.items:
         bins_tree.add(f'[blue]{item.name}[/blue] in {item} /position/ w:{item.position[0]}-{item.position[0]+item.width} x '
                       f'h:{item.position[1]}-{item.position[1]+item.height} x '
                       f'd:{item.position[2]}-{item.position[2]+item.depth}')
