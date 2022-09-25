@@ -161,7 +161,7 @@ class Bin:
         ax.plot3D([x+dx, x+dx], [y+dy, y+dy], [z, z+dz], **kwargs)
         ax.plot3D([x+dx, x+dx], [y, y], [z, z+dz], **kwargs)
 
-    def plotBoxAndItems(self, title="", export_to_img=True):
+    def plotBoxAndItems(self, title="", export_img=False):
         """ side effective. Plot the Bin and the items it contains. """
         fig = plt.figure()
         axGlob = plt.axes(projection='3d')
@@ -178,7 +178,7 @@ class Bin:
             self._plotCube(axGlob, float(x), float(y), float(z), float(w), float(h), float(d), color=color, lw=lw)
             counter = counter + 1
         plt.title(title)
-        if export_to_img:
+        if export_img:
             plt.savefig(f'reports/{self.name}_{self.efficacy:.3f}.png' , format="png")
         plt.show()
 

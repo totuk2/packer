@@ -30,5 +30,21 @@
     "hight": 40,
     "depth": 7,
     "weight": 7
+  },
+    "item5": {
+    "name": "item5",
+    "quantity": 40,
+    "width": 12,
+    "hight": 23,
+    "depth": 16,
+    "weight": 3
+  },
+    "item6": {
+    "name": "item6",
+    "quantity": 3,
+    "width": 6,
+    "hight": 35,
+    "depth": 45,
+    "weight": 1
   }
 }

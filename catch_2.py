@@ -55,7 +55,7 @@ def refresh_items(unfitted_items):
 def refresh_bin_types(bin_types):
     for bin in bin_types:
         packer.add_bin(bin)
-def execute_packing(items_to_fit: list, visualize=True) -> list:
+def execute_packing(items_to_fit: list, visualize=True, export_img=False) -> list:
     fitted_items = []   # list of solutions
     while items_to_fit:
         packing_efficacy = 0
@@ -73,7 +73,7 @@ def execute_packing(items_to_fit: list, visualize=True) -> list:
             fitted_items.append((item, best_bin))           # add item+bin to solutions
 
         if visualize:
-            best_bin.plotBoxAndItems(f'{best_bin.name} | efficacy: {best_bin.efficacy*100:.2f}%')
+            best_bin.plotBoxAndItems(f'{best_bin.name} | efficacy: {best_bin.efficacy*100:.2f}%', export_img=export_img)
 
         items_to_fit = deepcopy(best_bin.unfitted_items)
         packer.clear_bins()
