@@ -1,6 +1,6 @@
 from .constants import RotationType, Axis
 from .auxiliary_methods import intersect, set_to_decimal
-import copy
+from copy import deepcopy
 
 
 # required to plot a representation of Bin and contained items
@@ -149,11 +149,11 @@ class Bin:
         return fit
 
 
-    def _plotCube(self, ax, x, y, z, dx, dy, dz, color='red'):
+    def _plotCube(self, ax, x, y, z, dx, dy, dz, color='red', lw=4):
         """ Auxiliary function to plot a cube. code taken somewhere from the web.  """
         xx = [x, x, x+dx, x+dx, x]
         yy = [y, y+dy, y+dy, y, y]
-        kwargs = {'alpha': 1, 'color': color}
+        kwargs = {'alpha': 1, 'color': color, 'lw': lw}
         ax.plot3D(xx, yy, [z]*5, **kwargs)
         ax.plot3D(xx, yy, [z+dz]*5, **kwargs)
         ax.plot3D([x, x], [y, y], [z, z+dz], **kwargs)
@@ -166,16 +166,16 @@ class Bin:
         fig = plt.figure()
         axGlob = plt.axes(projection='3d')
         # . plot scatola
-        self._plotCube(axGlob,0, 0, 0, float(self.width), float(self.height), float(self.depth)  )
+        self._plotCube(axGlob,0, 0, 0, float(self.width), float(self.height), float(self.depth))
         # . plot intems in the box
         colorList = ["black", "blue", "magenta", "orange"]
         counter = 0
         for item in self.items:
-            x,y,z = item.position
+            lw = 2
             color = colorList[counter % len(colorList)]
-            self._plotCube(axGlob, float(x), float(y), float(z),
-                           float(item.width), float(item.height), float(item.depth),
-                           color=color)
+            x, y, z = item.position
+            w, h, d = item.get_dimension()
+            self._plotCube(axGlob, float(x), float(y), float(z), float(w), float(h), float(d), color=color, lw=lw)
             counter = counter + 1
         plt.title(title)
         if export_to_img:
@@ -284,7 +284,7 @@ class Packer:
 
         for bin in self.bins:
             for item in self.items:
-                self.pack_to_bin(bin, copy.deepcopy(item))
+                self.pack_to_bin(bin, deepcopy(item))
             bin.efficacy = bin.get_efficacy()
 
             if distribute_items:

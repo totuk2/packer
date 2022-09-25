@@ -72,8 +72,3 @@ for b in packer.bins:
 
 console.print(tree)
 console.save_html('reports/packing_inspect.html')
-
-# print(best_bin.name, best_bin.efficacy)
-# unfitted_items = len(best_bin.unfitted_items)
-# best_bin.plotBoxAndItems()
-# inspect(best_bin)
