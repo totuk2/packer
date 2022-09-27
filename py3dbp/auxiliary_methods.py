@@ -1,7 +1,5 @@
 from decimal import Decimal
 from .constants import Axis
-
-# required to plot a representation of Bin and contained items
 import matplotlib.pyplot as plt
 from mpl_toolkits import mplot3d
 
@@ -70,3 +68,14 @@ def plotBoxAndItems(bin, title="", export_img=False):
     if export_img:
         plt.savefig(f'reports/{bin.name}_{bin.efficacy:.3f}.png' , format="png")
     plt.show()
+
+def textualize_results(tree, best_bin):
+    tree.hide_root = False
+    bins_tree = tree.add(f'{best_bin.name}; w:{best_bin.width}; h:{best_bin.height}; d:{best_bin.depth}; '
+                         f'packed: {len(best_bin.items)} of {len(best_bin.items + best_bin.unfitted_items)}; '
+                         f'{best_bin.efficacy * 100:.2f}% used')
+    for item in best_bin.items:
+        bins_tree.add(
+            f'[blue]{item.name}[/blue] /position/ w:{item.position[0]} x h:{item.position[1]} x '
+            f'd:{item.position[2]} x /rotarion/ type: {item.rotation_type}')
+    return tree

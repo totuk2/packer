@@ -3,7 +3,7 @@ import json
 from py3dbp import Item, Bin, Packer
 from rich import print
 from rich.tree import Tree
-from py3dbp.auxiliary_methods import plotBoxAndItems
+from py3dbp.auxiliary_methods import plotBoxAndItems, textualize_results
 
 def load_box_types(file="boxes.json"):
     """Imports JSON file with definitions of boxes available."""
@@ -53,33 +53,19 @@ def refresh_bin_types(bin_types, packer):
         packer.add_bin(bin)
 def execute_packing(items_to_fit: list, visualize=True, export_img=False, textualize=True) -> list:
     fitted_items = []   # list of solutions
-    tree = Tree("Packing list:", highlight=True, hide_root=True)
+    if textualize:
+        tree = Tree("Packing list:", highlight=True, hide_root=True)
     while items_to_fit:
         packing_efficacy = 0
-
         packer = Packer()
-
         refresh_bin_types(bin_types, packer)
         refresh_items(items_to_fit, packer)
-
         packer.pack(bigger_first=True)
         best_bin = max(packer.bins, key=lambda b: b.efficacy)    # select the best packed bin
-
         for item in best_bin.items:
-            # print(item.string())
             fitted_items.append((item, best_bin))           # add item+bin to solutions
-
-
         if textualize:
-            tree.hide_root = False
-            bins_tree = tree.add(f'{best_bin.name}; w:{best_bin.width}; h:{best_bin.height}; d:{best_bin.depth}; '
-                                 f'packed: {len(best_bin.items)} of {len(best_bin.items + best_bin.unfitted_items)}; '
-                                 f'{best_bin.efficacy*100:.2f}% used')
-            for item in best_bin.items:
-                bins_tree.add(
-                    f'[blue]{item.name}[/blue] /position/ w:{item.position[0]} x h:{item.position[1]} x '
-                    f'd:{item.position[2]} x /rotarion/ type: {item.rotation_type}')
-
+            textualize_results(tree, best_bin)
         if visualize:
             plotBoxAndItems(best_bin, f'{best_bin.name} | efficacy: {best_bin.efficacy * 100:.2f}%',
                                      export_img=export_img)
@@ -95,4 +81,4 @@ items = load_items_types()
 unfitted_items = create_items(items)
 bin_types = create_bins(bins)
 
-execute_packing(unfitted_items, visualize=True, textualize=False)
+execute_packing(unfitted_items, visualize=False, textualize=True)
