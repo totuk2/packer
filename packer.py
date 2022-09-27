@@ -57,8 +57,7 @@ def refresh_items(unfitted_items):
 def refresh_bin_types(bin_types):
     for bin in bin_types:
         packer.add_bin(bin)
-def initialize_packer():
-    return Packer()
+
 def execute_packing(items_to_fit: list, visualize=True, export_img=False, textualize=True) -> list:
     fitted_items = []   # list of solutions
     tree = Tree("Packing list:", highlight=True, hide_root=True)
