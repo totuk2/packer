@@ -44,32 +44,23 @@ def create_bins(bins: dict) -> list:
             bins[bin]['depth'],
             bins[bin]['max_weight']))
     return bins_list
-def refresh_items(unfitted_items):
+def refresh_items(unfitted_items, packer):
     for item in unfitted_items:
         packer.add_item(item)
 
-                # Item(name, width, height, depth, weight)
-                # Item(items[item]['name'],
-                #      items[item]['width'],
-                #      items[item]['hight'],
-                #      items[item]['depth'],
-                #      items[item]['weight']))
-def refresh_bin_types(bin_types):
+def refresh_bin_types(bin_types, packer):
     for bin in bin_types:
         packer.add_bin(bin)
-
 def execute_packing(items_to_fit: list, visualize=True, export_img=False, textualize=True) -> list:
     fitted_items = []   # list of solutions
     tree = Tree("Packing list:", highlight=True, hide_root=True)
     while items_to_fit:
         packing_efficacy = 0
 
-        global packer
         packer = Packer()
 
-
-        refresh_bin_types(bin_types)
-        refresh_items(items_to_fit)
+        refresh_bin_types(bin_types, packer)
+        refresh_items(items_to_fit, packer)
 
         packer.pack(bigger_first=True)
         best_bin = max(packer.bins, key=lambda b: b.efficacy)    # select the best packed bin
