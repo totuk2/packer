@@ -48,7 +48,7 @@ def _plotCube(bin, ax, x, y, z, dx, dy, dz, color='red', lw=4):
     ax.plot3D([x+dx, x+dx], [y+dy, y+dy], [z, z+dz], **kwargs)
     ax.plot3D([x+dx, x+dx], [y, y], [z, z+dz], **kwargs)
 
-def plotBoxAndItems(bin, title="", export_img=False):
+def plotBoxAndItems(bin, export_img, title=""):
     """ side effective. Plot the Bin and the items it contains. """
     fig = plt.figure()
     axGlob = plt.axes(projection='3d')
@@ -66,7 +66,7 @@ def plotBoxAndItems(bin, title="", export_img=False):
         counter = counter + 1
     plt.title(title)
     if export_img:
-        plt.savefig(f'reports/{bin.name}_{bin.efficacy:.3f}.png' , format="png")
+        plt.savefig(f'reports/{bin.name}_{id(bin)}.png' , format="png")
     plt.show()
 
 def textualize_results(tree, best_bin):
