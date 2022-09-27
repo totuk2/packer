@@ -88,7 +88,8 @@ def execute_packing(items_to_fit: list, visualize=True, export_img=False, textua
                     f'd:{item.position[2]} x /rotarion/ type: {item.rotation_type}')
 
         if visualize:
-            best_bin.plotBoxAndItems(f'{best_bin.name} | efficacy: {best_bin.efficacy*100:.2f}%', export_img=export_img)
+            best_bin.plotBoxAndItems(f'{best_bin.name} | efficacy: {best_bin.efficacy * 100:.2f}%',
+                                     export_img=export_img)
 
         items_to_fit = deepcopy(best_bin.unfitted_items)
         packer.clear_bins()

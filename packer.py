@@ -3,6 +3,7 @@ import json
 from py3dbp import Item, Bin, Packer
 from rich import print
 from rich.tree import Tree
+from py3dbp.auxiliary_methods import plotBoxAndItems
 
 def load_box_types(file="boxes.json"):
     """Imports JSON file with definitions of boxes available."""
@@ -56,6 +57,8 @@ def refresh_items(unfitted_items):
 def refresh_bin_types(bin_types):
     for bin in bin_types:
         packer.add_bin(bin)
+def initialize_packer():
+    return Packer()
 def execute_packing(items_to_fit: list, visualize=True, export_img=False, textualize=True) -> list:
     fitted_items = []   # list of solutions
     tree = Tree("Packing list:", highlight=True, hide_root=True)
@@ -88,7 +91,8 @@ def execute_packing(items_to_fit: list, visualize=True, export_img=False, textua
                     f'd:{item.position[2]} x /rotarion/ type: {item.rotation_type}')
 
         if visualize:
-            best_bin.plotBoxAndItems(f'{best_bin.name} | efficacy: {best_bin.efficacy*100:.2f}%', export_img=export_img)
+            plotBoxAndItems(best_bin, f'{best_bin.name} | efficacy: {best_bin.efficacy * 100:.2f}%',
+                                     export_img=export_img)
 
         items_to_fit = deepcopy(best_bin.unfitted_items)
         packer.clear_bins()
@@ -101,4 +105,4 @@ items = load_items_types()
 unfitted_items = create_items(items)
 bin_types = create_bins(bins)
 
-execute_packing(unfitted_items, visualize=False, textualize=True)
+execute_packing(unfitted_items, visualize=True, textualize=False)
