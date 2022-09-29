@@ -248,7 +248,6 @@ class Packer:
             for item in self.items:
                 self.pack_to_bin(bin, deepcopy(item))
             bin.efficacy = bin.get_efficacy()
-
             if distribute_items:
                 for item in bin.items:
                     self.items.remove(item)

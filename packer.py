@@ -3,7 +3,7 @@ import json
 from py3dbp import Item, Bin, Packer
 from rich import print
 from rich.tree import Tree
-from py3dbp.auxiliary_methods import plotBoxAndItems, textualize_results
+from py3dbp.auxiliary_methods import plot_box_and_items, textualize_results
 
 def load_box_types(file="boxes.json"):
     """Imports JSON file with definitions of boxes available."""
@@ -71,11 +71,11 @@ def execute_packing(items_to_fit: list, bin_types: list, visualize=True, export_
         if textualize:
             textualize_results(tree, best_bin)
         if visualize:
-            plotBoxAndItems(best_bin, title=f'{best_bin.name} | efficacy: {best_bin.efficacy * 100:.2f}%',
-                                     export_img=export_img)
+            plot_box_and_items(best_bin, export_img=export_img,
+                               title=f'{best_bin.name} | efficacy: {best_bin.efficacy * 100:.2f}%')
         else:
             if export_img:
-                raise Exception("Export o image can be done only when visualize=True")
+                raise Exception("Export of image can be done only when visualize=True")
 
         items_to_fit = deepcopy(best_bin.unfitted_items)
         packer.clear_bins()
@@ -87,4 +87,4 @@ items = load_items_types()
 items_to_fit = create_items(items)
 bin_types = create_bins(bins)
 
-execute_packing(items_to_fit, bin_types, visualize=False, textualize=True)
+execute_packing(items_to_fit, bin_types, visualize=True, textualize=True)

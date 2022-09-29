@@ -36,7 +36,7 @@ def set_to_decimal(value, number_of_decimals):
 
     return Decimal(value).quantize(number_of_decimals)
 
-def _plotCube(bin, ax, x, y, z, dx, dy, dz, color='red', lw=4):
+def _plot_cube(bin, ax, x, y, z, dx, dy, dz, color='red', lw=4):
     """ Auxiliary function to plot a cube. code taken somewhere from the web.  """
     xx = [x, x, x+dx, x+dx, x]
     yy = [y, y+dy, y+dy, y, y]
@@ -48,12 +48,12 @@ def _plotCube(bin, ax, x, y, z, dx, dy, dz, color='red', lw=4):
     ax.plot3D([x+dx, x+dx], [y+dy, y+dy], [z, z+dz], **kwargs)
     ax.plot3D([x+dx, x+dx], [y, y], [z, z+dz], **kwargs)
 
-def plotBoxAndItems(bin, export_img, title=""):
+def plot_box_and_items(bin, export_img, title=""):
     """ side effective. Plot the Bin and the items it contains. """
     fig = plt.figure()
     axGlob = plt.axes(projection='3d')
     # . plot scatola
-    _plotCube(bin, axGlob,0, 0, 0, float(bin.width), float(bin.height), float(bin.depth))
+    _plot_cube(bin, axGlob,0, 0, 0, float(bin.width), float(bin.height), float(bin.depth))
     # . plot intems in the box
     colorList = ["black", "blue", "magenta", "orange"]
     counter = 0
@@ -62,7 +62,7 @@ def plotBoxAndItems(bin, export_img, title=""):
         color = colorList[counter % len(colorList)]
         x, y, z = item.position
         w, h, d = item.get_dimension()
-        _plotCube(bin, axGlob, float(x), float(y), float(z), float(w), float(h), float(d), color=color, lw=lw)
+        _plot_cube(bin, axGlob, float(x), float(y), float(z), float(w), float(h), float(d), color=color, lw=lw)
         counter = counter + 1
     plt.title(title)
     if export_img:

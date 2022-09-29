@@ -68,7 +68,7 @@ for b in packer.bins:
                       f'h:{item.position[1]}-{item.position[1]+item.height} x '
                       f'd:{item.position[2]}-{item.position[2]+item.depth}')
         # console.print(inspect(item, title=f'[red bold] Inspecting {item.name} {item}: [/red bold]', sort=False))
-    b.plotBoxAndItems(f'{b.name}, efficacy:{b.get_efficacy() * 100:.2f}%')
+    b.plot_box_and_items(f'{b.name}, efficacy:{b.get_efficacy() * 100:.2f}%', )
 
 console.print(tree)
 console.save_html('reports/packing_inspect.html')
