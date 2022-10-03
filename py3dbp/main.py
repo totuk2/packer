@@ -1,5 +1,7 @@
 from .constants import RotationType, Axis
 from .auxiliary_methods import intersect, set_to_decimal
+from copy import deepcopy
+
 
 DEFAULT_NUMBER_OF_DECIMALS = 3
 START_POSITION = [0, 0, 0]
@@ -244,9 +246,8 @@ class Packer:
 
         for bin in self.bins:
             for item in self.items:
-                self.pack_to_bin(bin, item)
+                self.pack_to_bin(bin, deepcopy(item))
             bin.efficacy = bin.get_efficacy()
-
             if distribute_items:
                 for item in bin.items:
                     self.items.remove(item)

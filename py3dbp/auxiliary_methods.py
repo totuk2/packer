@@ -1,5 +1,7 @@
 from decimal import Decimal
 from .constants import Axis
+import matplotlib.pyplot as plt
+from mpl_toolkits import mplot3d
 
 
 def rect_intersect(item1, item2, x, y):
@@ -33,3 +35,47 @@ def set_to_decimal(value, number_of_decimals):
     number_of_decimals = get_limit_number_of_decimals(number_of_decimals)
 
     return Decimal(value).quantize(number_of_decimals)
+
+def _plot_cube(bin, ax, x, y, z, dx, dy, dz, color='red', lw=4):
+    """ Auxiliary function to plot a cube. code taken somewhere from the web.  """
+    xx = [x, x, x+dx, x+dx, x]
+    yy = [y, y+dy, y+dy, y, y]
+    kwargs = {'alpha': 1, 'color': color, 'lw': lw}
+    ax.plot3D(xx, yy, [z]*5, **kwargs)
+    ax.plot3D(xx, yy, [z+dz]*5, **kwargs)
+    ax.plot3D([x, x], [y, y], [z, z+dz], **kwargs)
+    ax.plot3D([x, x], [y+dy, y+dy], [z, z+dz], **kwargs)
+    ax.plot3D([x+dx, x+dx], [y+dy, y+dy], [z, z+dz], **kwargs)
+    ax.plot3D([x+dx, x+dx], [y, y], [z, z+dz], **kwargs)
+
+def plot_box_and_items(bin, export_img, title=""):
+    """ side effective. Plot the Bin and the items it contains. """
+    fig = plt.figure()
+    axGlob = plt.axes(projection='3d')
+    # . plot scatola
+    _plot_cube(bin, axGlob,0, 0, 0, float(bin.width), float(bin.height), float(bin.depth))
+    # . plot intems in the box
+    colorList = ["black", "blue", "magenta", "orange"]
+    counter = 0
+    for item in bin.items:
+        lw = 2
+        color = colorList[counter % len(colorList)]
+        x, y, z = item.position
+        w, h, d = item.get_dimension()
+        _plot_cube(bin, axGlob, float(x), float(y), float(z), float(w), float(h), float(d), color=color, lw=lw)
+        counter = counter + 1
+    plt.title(title)
+    if export_img:
+        plt.savefig(f'reports/{bin.name}_{id(bin)}.png' , format="png")
+    plt.show()
+
+def textualize_results(tree, best_bin):
+    tree.hide_root = False
+    bins_tree = tree.add(f'{best_bin.name}; w:{best_bin.width}; h:{best_bin.height}; d:{best_bin.depth}; '
+                         f'packed: {len(best_bin.items)} of {len(best_bin.items + best_bin.unfitted_items)}; '
+                         f'{best_bin.efficacy * 100:.2f}% used')
+    for item in best_bin.items:
+        bins_tree.add(
+            f'[blue]{item.name}[/blue] /position/ w:{item.position[0]} x h:{item.position[1]} x '
+            f'd:{item.position[2]} x /rotarion/ type: {item.rotation_type}')
+    return tree
