@@ -60,7 +60,6 @@ def execute_packing(items_to_fit: list, bin_types: list, visualize=True, export_
     fitted_items = []   # list of solutions
     tree = Tree("Packing list:", highlight=True, hide_root=True)
     while items_to_fit:
-        packing_efficacy = 0
         packer = Packer()
         refresh_bin_types(bin_types, packer)
         refresh_items(items_to_fit, packer)
@@ -87,4 +86,4 @@ items = load_items_types()
 items_to_fit = create_items(items)
 bin_types = create_bins(bins)
 
-execute_packing(items_to_fit, bin_types, visualize=True, textualize=True)
+execute_packing(items_to_fit, bin_types, visualize=False, textualize=True)
