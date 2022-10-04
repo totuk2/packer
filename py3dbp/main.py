@@ -18,6 +18,7 @@ class Item:
         self.position = START_POSITION
         self.number_of_decimals = DEFAULT_NUMBER_OF_DECIMALS
 
+
     def format_numbers(self, number_of_decimals):
         self.width = set_to_decimal(self.width, number_of_decimals)
         self.height = set_to_decimal(self.height, number_of_decimals)
