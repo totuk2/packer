@@ -52,7 +52,7 @@ def test_bin_get_volume():
     bin = Bin('test_bin', 10, 10, 10, 10)
     assert bin.get_volume() == 1000
         
-
+#ISSUE: this test does not show the number of bins the items were packed to, but the number of bin types!!!
 def test_packer_fills_entire_box():
     items = [Item('test_item1', 5, 5, 5, 5),
             Item('test_item2', 5, 5, 5, 5),
@@ -62,6 +62,19 @@ def test_packer_fills_entire_box():
     solutions = execute_packing(items, bins, visualize=False, textualize=False)
     bins_used = set(bins[1] for bins in solutions)
     assert len(bins_used) == 1
+
+@pytest.mark.xfail(run=True, reason="packer's fitted_items solution lists [item, bin_type], not specific bin")
+def test_packer_respects_bin_dims():
+    items = [Item('test_item1', 5, 5, 5, 5),
+            Item('test_item2', 5, 5, 5, 5),
+            Item('test_item3', 5, 5, 5, 5),
+            Item('test_item4', 5, 5, 5, 5)]
+    bins = [Bin('test_bin1', 10, 10, 5, 10)]
+    solutions = execute_packing(items, bins, visualize=True, textualize=True)
+    print(solutions)
+    bins_used = set(bins[1] for bins in solutions)
+    print(bins_used)
+    assert len(bins_used) == 2
 
 
 @pytest.mark.xfail(run=False, reason="Program gets into infinite loop while unfitted_items != 0")
