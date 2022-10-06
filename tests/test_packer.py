@@ -1,6 +1,6 @@
 import pytest
 from itertools import combinations_with_replacement
-from packer import execute_packing
+from packer import execute_packing, refresh_items, refresh_bin_types
 from py3dbp import *
 
 @pytest.mark.xfail(reason="no validation on Item class")
@@ -45,39 +45,59 @@ def test_item_get_volume():
     # proper calculations
     item = Item('test_item', 10, 10, 10, 10)
     assert item.get_volume() == 1000
-    
-    
+
+
+def test_bin_get_total_weight():
+    bin = Bin('test_bin_1', 15, 15, 15, 15)
+    items = [Item('test_item1', 5, 5, 5, 5),
+             Item('test_item2', 5, 5, 5, 5)]
+    for item in items:
+        bin.items.append(item)
+    assert bin.get_total_weight() == 10
+
+
+def test_bin_get_efficacy():
+    bin = Bin('test_bin_1', 10, 10, 5, 10)
+    items = [Item('test_item1', 5, 5, 5, 5),
+             Item('test_item2', 5, 5, 5, 5)]
+    for item in items:
+        bin.items.append(item)
+    assert bin.get_efficacy() == 0.5
+
+
 def test_bin_get_volume():
     # proper calculations
     bin = Bin('test_bin', 10, 10, 10, 10)
     assert bin.get_volume() == 1000
-        
-#ISSUE: this test does not show the number of bins the items were packed to, but the number of bin types!!!
+
+
 def test_packer_fills_entire_box():
+    #ISSUE: this test does not show the number of bins the items were packed to, but the number of bin types!!!
     items = [Item('test_item1', 5, 5, 5, 5),
-            Item('test_item2', 5, 5, 5, 5),
-            Item('test_item3', 5, 5, 5, 5),
-            Item('test_item4', 5, 5, 5, 5)]
+             Item('test_item2', 5, 5, 5, 5),
+             Item('test_item3', 5, 5, 5, 5),
+             Item('test_item4', 5, 5, 5, 5)]
     bins = [Bin('test_bin1', 10, 10, 5, 20)]
     solutions = execute_packing(items, bins, visualize=False, textualize=False)
     bins_used = set(bins[1] for bins in solutions)
     assert len(bins_used) == 1
 
+
 @pytest.mark.xfail(run=True, reason="packer's fitted_items solution lists [item, bin_type], not specific bin")
-def test_packer_respects_bin_dims():
+def test_packer_respects_bin_constraints():
     items = [Item('test_item1', 5, 5, 5, 5),
             Item('test_item2', 5, 5, 5, 5),
             Item('test_item3', 5, 5, 5, 5),
             Item('test_item4', 5, 5, 5, 5)]
     bins = [Bin('test_bin1', 10, 10, 5, 10)]
-    solutions = execute_packing(items, bins, visualize=True, textualize=True)
+    solutions = execute_packing(items, bins, visualize=True, textualize=False)
     print(solutions)
     bins_used = set(bins[1] for bins in solutions)
     print(bins_used)
     assert len(bins_used) == 2
 
 
-@pytest.mark.xfail(run=False, reason="Program gets into infinite loop while unfitted_items != 0")
+@pytest.mark.xfail(run=False, reason="Program gets into infinite loop while at least one item is larger than any bin")
 def test_packer_rises_exception_on_item_too_large_to_fit():
     bins = [Bin('test_bin1', 1, 1, 1, 1)]
     items = [Item('test_item1', 2, 1, 1, 1),
@@ -90,25 +110,27 @@ def test_packer_rises_exception_on_item_too_large_to_fit():
                 execute_packing([item], bins, visualize=False, textualize=False)
 
 
-def test_bin_remove_item():
-    pass
-
-
-def test_bin_get_efficacy():
-    pass
-
-
-def test_bin_get_total_weight():
-    pass
-
-
 def test_packer_add_bin():
-    pass
+    packer = Packer()
+    bin = Bin('test_bin1', 10, 10, 10, 10)
+    packer.add_bin(bin)
+    assert len(packer.bins) == 1
 
 
 def test_packer_add_item():
-    pass
+    packer = Packer()
+    item = Item('test_item1', 5, 5, 5, 5)
+    packer.add_item(item)
+    assert len(packer.items) == 1
 
 
-def test_packer_clear_bins():
+def test_packer_remove_item():
+    packer = Packer()
+    item = Item('test_item1', 5, 5, 5, 5)
+    packer.add_item(item)
+    packer.remove_item(item)
+    assert len(packer.items) == 0
+
+
+def test_execute_packing():
     pass
