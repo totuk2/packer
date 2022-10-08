@@ -63,7 +63,7 @@ def refresh_bin_types(bin_types, packer):
         packer.add_bin(bin)
 
 
-def execute_packing(items_to_fit: list, bin_types: list, visualize=True, export_img=False, textualize=True) -> list:
+def execute_packing(items_to_fit: list, bin_types: list, visualize=False, export_img=False, textualize=False) -> list:
     fitted_items = []   # list of solutions
     tree = Tree("Packing list:", highlight=True, hide_root=True)
     while items_to_fit:
@@ -89,9 +89,8 @@ def execute_packing(items_to_fit: list, bin_types: list, visualize=True, export_
     return fitted_items
 
 
-bins = load_box_types()
-items = load_items_types()
-items_to_fit = create_items(items)
-bin_types = create_bins(bins)
-
-execute_packing(items_to_fit, bin_types, visualize=True, textualize=True)
+# bins = load_box_types()
+# items = load_items_types()
+# items_to_fit = create_items(items)
+# bin_types = create_bins(bins)
+# execute_packing(items_to_fit, bin_types, visualize=False, textualize=False)

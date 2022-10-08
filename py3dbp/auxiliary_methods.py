@@ -75,7 +75,7 @@ def textualize_results(tree, best_bin):
     tree.hide_root = False
     bins_tree = tree.add(f'{best_bin.name}; w:{best_bin.width}; h:{best_bin.height}; d:{best_bin.depth}; '
                          f'packed: {len(best_bin.items)} of {len(best_bin.items + best_bin.unfitted_items)}; '
-                         f'{best_bin.efficacy * 100:.2f}% used; bin volume: {best_bin.get_volume()}')
+                         f'{best_bin.efficacy * 100:.2f}% used')
     for item in best_bin.items:
         bins_tree.add(
             f'[blue]{item.name}[/blue] /position/ w:{item.position[0]} x h:{item.position[1]} x '

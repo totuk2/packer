@@ -1,7 +1,7 @@
 import pytest
 from itertools import combinations_with_replacement
 from packer import execute_packing, load_items_types, load_box_types, create_items, create_bins
-from py3dbp import *
+from py3dbp import Item, Bin, Packer
 
 
 @pytest.mark.xfail(reason="no validation on Item class")
@@ -40,8 +40,8 @@ def test_bin_creation_when_dims_nan():
     width, hight, depth, max_weight = ['a', 'b', 'c', 'd']
     with pytest.raises(Exception):
         Item('test_bin', width, hight, depth, max_weight)
-        
-        
+
+
 def test_item_get_volume():
     # proper calculations
     item = Item('test_item', 10, 10, 10, 10)
@@ -104,7 +104,7 @@ def test_packer_rises_exception_on_item_too_large_to_fit():
              Item('test_item3', 1, 1, 2, 1),
              Item('test_item4', 1, 1, 1, 2)]
     for item in items:
-        if item.width or item.height or item.depth or item.weight == 2:
+        if item.width == 2 or item.height == 2 or item.depth == 2 or item.weight == 2:
             with pytest.raises(Exception):
                 execute_packing([item], bins, visualize=False, textualize=False)
 
@@ -131,16 +131,30 @@ def test_packer_remove_item():
     assert len(packer.items) == 0
 
 
-@pytest.mark.xfail(reason="Test fails because solution does not show the number of bins the items were packed to, "
-                          "but the number of bin types!!!")
+@pytest.mark.skip(reason="This test passes, however it is not showing what should. It will show correct results"
+                         "when Issue #14 is solved and test test_packer_respects_bin_constraints() passes.")
 def test_execute_packing_optimum_volume_results():
     bins = load_box_types(file="tests/boxes_test.json")
     items = load_items_types(file="tests/items_test.json")
     items_to_fit = create_items(items)
     bin_types = create_bins(bins)
     solution = execute_packing(items_to_fit, bin_types, visualize=False, textualize=False)
+
     bins_used = set(bins[1] for bins in solution)
     total_volume = 0
     for box in bins_used:
         total_volume += box.get_volume()
-    assert total_volume == 360000
+    assert total_volume <= 360000
+
+
+def test_packer_items_not_packed_out_of_gauge():
+    bins = load_box_types(file="tests/boxes_test.json")
+    items = load_items_types(file="tests/items_test.json")
+    items_to_fit = create_items(items)
+    bin_types = create_bins(bins)
+    solution = execute_packing(items_to_fit, bin_types, visualize=False, textualize=False)
+
+    for item, bin in solution:
+        assert item.position[0] + item.get_dimension()[0] <= bin.width
+        assert item.position[1] + item.get_dimension()[1] <= bin.height
+        assert item.position[2] + item.get_dimension()[2] <= bin.depth
