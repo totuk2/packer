@@ -13,8 +13,6 @@ def test_items_creation_when_dims_negative_or_zero():
         if 0 or -1 in item_dims:
             with pytest.raises(Exception):
                 Item('test_item', width, hight, depth, weight)
-        else:
-            assert Item('test_item', width, hight, depth, weight) == isinstance(Item)
 
 
 @pytest.mark.xfail(reason="no validation on Bin class")
