@@ -132,8 +132,6 @@ class Bin:
 
                 self.items.append(item)
 
-
-
             if not fit:
                 item.position = valid_item_position
 

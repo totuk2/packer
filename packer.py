@@ -5,6 +5,7 @@ from rich import print
 from rich.tree import Tree
 from py3dbp.auxiliary_methods import plot_box_and_items, textualize_results
 
+
 def load_box_types(file="boxes.json"):
     """Imports JSON file with definitions of boxes available."""
     try:
@@ -15,6 +16,7 @@ def load_box_types(file="boxes.json"):
         return 1
     return bins
 
+
 def load_items_types(file="items.json"):
     """Imports items from the basket in JSON format"""
     try:
@@ -24,6 +26,7 @@ def load_items_types(file="items.json"):
         print("File not found.")
         return 1
     return items
+
 
 def create_items(items: dict) -> list:
     item_list = []
@@ -37,6 +40,7 @@ def create_items(items: dict) -> list:
                 items[item]['weight']))
     return item_list
 
+
 def create_bins(bins: dict) -> list:
     bins_list = []
     for bin in bins:
@@ -48,13 +52,16 @@ def create_bins(bins: dict) -> list:
             bins[bin]['max_weight']))
     return bins_list
 
+
 def refresh_items(unfitted_items, packer):
     for item in unfitted_items:
         packer.add_item(item)
 
+
 def refresh_bin_types(bin_types, packer):
     for bin in bin_types:
         packer.add_bin(bin)
+
 
 def execute_packing(items_to_fit: list, bin_types: list, visualize=True, export_img=False, textualize=True) -> list:
     fitted_items = []   # list of solutions
@@ -81,9 +88,10 @@ def execute_packing(items_to_fit: list, bin_types: list, visualize=True, export_
     print(tree)
     return fitted_items
 
+
 bins = load_box_types()
 items = load_items_types()
 items_to_fit = create_items(items)
 bin_types = create_bins(bins)
 
-execute_packing(items_to_fit, bin_types, visualize=False, textualize=True)
+execute_packing(items_to_fit, bin_types, visualize=True, textualize=True)
