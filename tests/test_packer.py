@@ -82,7 +82,7 @@ def test_packer_fills_entire_box():
     assert len(bins_used) == 1
 
 
-@pytest.mark.xfail(run=True, reason="packer's fitted_items solution lists [item, bin_type], not specific bin")
+# @pytest.mark.xfail(run=True, reason="packer's fitted_items solution lists [item, bin_type], not specific bin")
 def test_packer_respects_bin_constraints():
     items = [Item('test_item1', 5, 5, 5, 5),
              Item('test_item2', 5, 5, 5, 5),
@@ -129,8 +129,8 @@ def test_packer_remove_item():
     assert len(packer.items) == 0
 
 
-@pytest.mark.skip(reason="This test passes, however it is not showing what should. It will show correct results"
-                         "when Issue #14 is solved and test test_packer_respects_bin_constraints() passes.")
+# @pytest.mark.skip(reason="This test passes, however it is not showing what should. It will show correct results"
+#                          "when Issue #14 is solved and test test_packer_respects_bin_constraints() passes.")
 def test_execute_packing_optimum_volume_results():
     bins = load_box_types(file="tests/boxes_test.json")
     items = load_items_types(file="tests/items_test.json")

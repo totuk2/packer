@@ -71,7 +71,7 @@ def execute_packing(items_to_fit: list, bin_types: list, visualize=False, export
         refresh_bin_types(bin_types, packer)
         refresh_items(items_to_fit, packer)
         packer.pack(bigger_first=True)
-        best_bin = max(packer.bins, key=lambda b: b.efficacy)    # select the best packed bin
+        best_bin = deepcopy(max(packer.bins, key=lambda b: b.efficacy)) # select the best packed bin and copy it
         for item in best_bin.items:
             fitted_items.append((item, best_bin))           # add item+bin to solutions
         if textualize:
