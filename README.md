@@ -1,7 +1,7 @@
 3D Bin Packing
 ====
 
-This project is a fork from Enzo Ruiz implementation of 3D Bin Packing available [here](https://github.com/enzoruiz/3dbinpacking.git) version py3dbp==1.1.2.
+This project is a fork from @github/enzoruiz implementation of 3D Bin Packing available [here](https://github.com/enzoruiz/3dbinpacking.git) version py3dbp==1.1.2.
 Original 3D Bin Packing implementation is based on [this paper](erick_dube_507-034.pdf). The code is based on [gedex](https://github.com/gedex/bp3d) implementation in Go.
 
 ## Features
@@ -16,11 +16,11 @@ Original 3D Bin Packing implementation is based on [this paper](erick_dube_507-0
     ```[number_of_decimals=X]``` Define the limits of decimals of the inputs and the outputs. By default is 3.
 
 4. Visualisation of packed bins:
-    ```[visualize=False/True | default=True]``` Plots the items fitted into the bins. 
+    ```[visualize=False/True | default=False]``` Plots the items fitted into the bins. 
     ```[export_img=False/True | default=False]``` While ```visualize=True``` it is possible to export the visual configuration of each bin to .png file to separate           folder: reports.
     
 5. Textualization of packed bins:
-    ```[textualize=True | default=True]``` Prints to console the packing list as the tree of bins and items packed into each of the bins.
+    ```[textualize=True/False | default=False]``` Prints to console the packing list as the tree of bins and items packed into each of the bins.
 
 
 ## Basic Explanation
@@ -51,34 +51,60 @@ Bin types and items to be fitted are loaded from the JSON files:
 }
 ```
 
+
 ### 2. Create Bins and Items objects from the previously loaded JSON files
 
-```create_bins(bins: dict) -> list``` - will create the list of Bin types objects from previously loaded JSON file.
-```create_items(items: dict) -> list``` - will create the list of Items objects in number specified by ```quantity``` parameter in previously loaded JSON file.
+- ```create_bins(bins: dict) -> list``` 
+   - will create the list of Bin types objects from previously loaded JSON file.
+- ```create_items(items: dict) -> list``` 
+   - will create the list of Items objects in number specified by ```quantity``` parameter in previously loaded JSON file.
 
-Bin and Items have the same creation params:
-```
-my_bin = Bin(name, width, height, depth, max_weight)
-my_item = Item(name, width, height, depth, weight)
-```
+-   Bin and Items have the same creation params:
+    - ```
+      my_bin = Bin(name, width, height, depth, max_weight)
+      my_item = Item(name, width, height, depth, weight)
+      ```
 
 
-Packer have three main functions:
-```
-packer = Packer()           # PACKER DEFINITION
+### 3. Initialize instance of Packer
 
-packer.add_bin(my_bin)      # ADDING BINS TO PACKER
-packer.add_item(my_item)    # ADDING ITEMS TO PACKER
+- `packer = Packer()`           # PACKER DEFINITION
 
-packer.pack()               # PACKING - by default (bigger_first=False, distribute_items=False, number_of_decimals=3)
-```
+#### Methods to be used on packers instance:
+- `packer.add_bin(my_bin)`      # ADDING BINS TO PACKER
+    - my_bin` will be added to packer.bins as one of the types of bins that can be used to pack items. 
+    
+- `packer.add_item(my_item)`    # ADDING ITEMS TO PACKER
+    - my_item will be added to packer.items to be fittedd into the bins
+    
+- `packer.remove_item(my_item)` # REMOVES ITEM FROM PACKER
 
-After packing:
-```
-packer.bins                 # GET ALL BINS OF PACKER
-my_bin.items                # GET ALL FITTED ITEMS IN EACH BIN
-my_bin.unfitted_items       # GET ALL UNFITTED ITEMS IN EACH BIN
-```
+- `packer.clear_bins(arg)`      # CLEAR PACKER BINS. 
+    - Argument type can take values: "all" (default) | "fitted" | "unfitted" 
+    
+ - `packer.pack()`              # PACKING - by default (bigger_first=False ~~distribute_items=False,~~ number_of_decimals=3)
+    - method tries to fit all Items added to `packer` to all Bins added to `packer`. Calling this function will result in each Bin being filled with as many Item as possible. After calling this method each of the Bin in `packer` instance will hold:
+        - `my_bin.items` - the list of fitted items
+        - `my_bin.unfitted_items - the list of items that could not have been fitted into this bin
+
+
+### 4. Use `execute_packing()` function to find the most optimal way of packing all items into available box types. 
+
+- `execute_packing(items_to_fit, bin_types, visualize=False, export_img=False, textualize=False)`
+    - items_to_fit: holds the list of Item type objects
+    - bin_types: holds the list of Bin type objects
+    - visualize=True will present the packing results in the 3D visualisation
+    - export_img=True will save the visualistation to separate .png file in /reports 
+    - textualize=True will print to console the packing list as the tree of bins and items packed into each of the bins.
+
+- the function workflow is as follow:
+    - run the packer.pack() on the initiated items/bins
+    - find the bin which was packed in the most effective way (as a % of bin volume utilized by packed items)
+    - save this bin and all fitted items to the list of results
+    - take all the bins that were not fitted and re-iterate the packer.pack() on those objects 
+    - do until there are no unfitted items left
+
+Function will return (item, bin) tuple.
 
 
 ## Usage
@@ -87,6 +113,13 @@ my_bin.unfitted_items       # GET ALL UNFITTED ITEMS IN EACH BIN
 from py3dbp import Packer, Bin, Item
 from py3dbp import excute_packing
 
+bins = load_box_types()                  # load available bin types from JSON file  <-- 'box' should be refactored to 'bins'
+items = load_items_types()               # load the items which needs to be packed from JSON file
+
+items_to_fit = create_items(items)       # create objects to be passed to packer
+bin_types = create_bins(bins)            # create bin types to which we will pack the items
+
+execute_packing(items_to_fit, bin_types, visualize=False, textualize=False)     # do the packing
 ```
 
 
