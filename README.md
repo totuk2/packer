@@ -68,21 +68,33 @@ Bin types and items to be fitted are loaded from the JSON files:
 
 ### 3. Initialize instance of Packer
 
-- `packer = Packer()`           # PACKER DEFINITION
+- ```python
+  packer = Packer()              # Packer definition
+  ```
 
 #### Methods to be used on packers instance:
-- `packer.add_bin(my_bin)`      # ADDING BINS TO PACKER
-    - my_bin` will be added to packer.bins as one of the types of bins that can be used to pack items. 
+- ```python
+  packer.add_bin(my_bin)         # Adding Bins to packer instance
+  ```
+    - `my_bin` will be added to packer.bins as one of the types of bins that can be used to pack items. 
     
-- `packer.add_item(my_item)`    # ADDING ITEMS TO PACKER
-    - my_item will be added to packer.items to be fittedd into the bins
+- ```python
+  packer.add_item(my_item)       # Adding Items to packer instance 
+  ```
+    - `my_item` will be added to packer.items to be fittedd into the bins
     
-- `packer.remove_item(my_item)` # REMOVES ITEM FROM PACKER
+- ```python
+  packer.remove_item(my_item)    # Removes Item from packer instance
+  ```
 
-- `packer.clear_bins(arg)`      # CLEAR PACKER BINS. 
+- ```python
+  packer.clear_bins(type="all")         # Clear packer.bins
+  ```
     - Argument type can take values: "all" (default) | "fitted" | "unfitted" 
     
- - `packer.pack()`              # PACKING - by default (bigger_first=False ~~distribute_items=False,~~ number_of_decimals=3)
+ - ```python
+   packer.pack()                 # Analyze the Items fitting each Bin  - by default (bigger_first=False ~~distribute_items=False,~~ number_of_decimals=3)
+   ```
     - method tries to fit all Items added to `packer` to all Bins added to `packer`. Calling this function will result in each Bin being filled with as many Item as possible. After calling this method each of the Bin in `packer` instance will hold:
         - `my_bin.items` - the list of fitted items
         - `my_bin.unfitted_items - the list of items that could not have been fitted into this bin
@@ -111,7 +123,7 @@ Function will return (item, bin) tuple.
 
 ```python
 from py3dbp import Packer, Bin, Item
-from py3dbp import excute_packing
+from py3dbp import execute_packing
 
 bins = load_box_types()                  # load available bin types from JSON file  <-- 'box' should be refactored to 'bins'
 items = load_items_types()               # load the items which needs to be packed from JSON file
