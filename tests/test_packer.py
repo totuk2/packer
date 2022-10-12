@@ -1,7 +1,10 @@
+from pathlib import Path
 import pytest
 from itertools import combinations_with_replacement
 from packer import execute_packing, load_items_types, load_box_types, create_items, create_bins
 from py3dbp import Item, Bin, Packer
+
+TEST_FOLDER = Path(__file__).resolve().parent
 
 
 @pytest.mark.xfail(reason="no validation on Item class")
@@ -132,8 +135,8 @@ def test_packer_remove_item():
 @pytest.mark.skip(reason="This test passes, however it is not showing what should. It will show correct results"
                          "when Issue #14 is solved and test test_packer_respects_bin_constraints() passes.")
 def test_execute_packing_optimum_volume_results():
-    bins = load_box_types(file="tests/boxes_test.json")
-    items = load_items_types(file="tests/items_test.json")
+    bins = load_box_types(file=f"{TEST_FOLDER}/boxes_test.json")
+    items = load_items_types(file=f"{TEST_FOLDER}/items_test.json")
     items_to_fit = create_items(items)
     bin_types = create_bins(bins)
     solution = execute_packing(items_to_fit, bin_types, visualize=False, textualize=False)
@@ -146,8 +149,8 @@ def test_execute_packing_optimum_volume_results():
 
 
 def test_packer_items_not_packed_out_of_gauge():
-    bins = load_box_types(file="tests/boxes_test.json")
-    items = load_items_types(file="tests/items_test.json")
+    bins = load_box_types(file=f"{TEST_FOLDER}/boxes_test.json")
+    items = load_items_types(file=f"{TEST_FOLDER}/items_test.json")
     items_to_fit = create_items(items)
     bin_types = create_bins(bins)
     solution = execute_packing(items_to_fit, bin_types, visualize=False, textualize=False)
