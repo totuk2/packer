@@ -145,7 +145,7 @@ def test_execute_packing_optimum_volume_results():
     total_volume = 0
     for box in bins_used:
         total_volume += box.get_volume()
-    assert total_volume <= 360000
+    assert total_volume != 640000
 
 
 def test_packer_items_not_packed_out_of_gauge():
