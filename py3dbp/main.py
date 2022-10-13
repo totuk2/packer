@@ -1,23 +1,24 @@
 from .constants import RotationType, Axis
 from .auxiliary_methods import intersect, set_to_decimal
 from copy import deepcopy
-
+from typing import List
 
 DEFAULT_NUMBER_OF_DECIMALS = 3
 START_POSITION = [0, 0, 0]
 
 
 class Item:
-    def __init__(self, name, width, height, depth, weight):
-        self.name = name
-        self.width = width
-        self.height = height
-        self.depth = depth
-        self.weight = weight
+    def __init__(self, name: str, width: float, height: float, depth: float, weight: float):
+        if width <= 0 or height <= 0 or depth <= 0 or weight <= 0:
+            Exception('Dimensions has to be more then 0.')
+        self.name: str = name
+        self.width: float = width
+        self.height: float = height
+        self.depth: float = depth
+        self.weight: float = weight
         self.rotation_type = 0
         self.position = START_POSITION
         self.number_of_decimals = DEFAULT_NUMBER_OF_DECIMALS
-
 
     def format_numbers(self, number_of_decimals):
         self.width = set_to_decimal(self.width, number_of_decimals)
@@ -63,10 +64,11 @@ class Bin:
         self.height = height
         self.depth = depth
         self.max_weight = max_weight
-        self.items = []
-        self.unfitted_items = []
+        self.items: List[Item] = []
+        self.unfitted_items: List[Item] = []
         self.number_of_decimals = DEFAULT_NUMBER_OF_DECIMALS
         self.efficacy = 0
+        self.packer_owner: Packer or None = None
 
     def format_numbers(self, number_of_decimals):
         self.width = set_to_decimal(self.width, number_of_decimals)
@@ -102,7 +104,7 @@ class Bin:
 
         return set_to_decimal(total_weight, self.number_of_decimals)
 
-    def put_item(self, item, pivot):
+    def put_item(self, item: Item, pivot):
         fit = False
         valid_item_position = item.position
         item.position = pivot
@@ -145,9 +147,8 @@ class Bin:
 
 class Packer:
     def __init__(self):
-        self.bins = []
-        self.items = []
-        self.unfit_items = []
+        self.bins: List[Bin] = []
+        self.items: List[Item] = []
         self.total_items = 0
 
     def add_bin(self, bin):
@@ -157,23 +158,6 @@ class Packer:
         self.total_items = len(self.items) + 1
 
         return self.items.append(item)
-
-    def clear_bins(self, type='all'):
-        """Clear Packer bins. Argument type can take values: "all" (default) | "fitted" | "unfitted" """
-        types = ['all', 'fitted', 'unfitted']
-        if type not in types:
-            raise ValueError("Invalid bin type. Expected one of %s" %types)
-        else:
-            if type == 'all':
-                for b in self.bins:
-                    b.items.clear()
-                    b.unfitted_items.clear()
-            if type == 'fitted':
-                for b in self.bins:
-                    b.items.clear()
-            else:
-                for b in self.bins:
-                    b.unfitted_items.clear()
 
     def remove_item(self, item):
         self.total_items = len(self.items) - 1

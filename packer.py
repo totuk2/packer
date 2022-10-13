@@ -1,3 +1,4 @@
+from typing import List
 from copy import deepcopy
 import json
 from py3dbp import Item, Bin, Packer
@@ -93,4 +94,4 @@ def execute_packing(items_to_fit: list, bin_types: list, visualize=False, export
 # items = load_items_types()
 # items_to_fit = create_items(items)
 # bin_types = create_bins(bins)
-# execute_packing(items_to_fit, bin_types, visualize=False, textualize=False)
+# get_best_bins(items_to_fit, bin_types, visualize=False, textualize=False)
