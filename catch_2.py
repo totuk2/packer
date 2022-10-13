@@ -92,7 +92,6 @@ def execute_packing(items_to_fit: list, visualize=True, export_img=False, textua
                                         export_img=export_img)
 
         items_to_fit = deepcopy(best_bin.unfitted_items)
-        packer.clear_bins()
     print(tree)
     return fitted_items
 

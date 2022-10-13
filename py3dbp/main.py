@@ -151,8 +151,11 @@ class Packer:
         self.items: List[Item] = []
         self.total_items = 0
 
-    def add_bin(self, bin):
-        return self.bins.append(bin)
+    def add_bin(self, bin: Bin):
+        if bin.packer_owner is not None:
+            raise Exception(f'This bin is already assigned to Packer: {bin.packer_owner.name}')
+        bin.packer_owner = self
+        self.bins.append(bin)
 
     def add_item(self, item):
         self.total_items = len(self.items) + 1
