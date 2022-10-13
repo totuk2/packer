@@ -1,3 +1,4 @@
+from typing import List
 from copy import deepcopy
 import json
 from py3dbp import Item, Bin, Packer
@@ -58,22 +59,21 @@ def refresh_items(unfitted_items, packer):
         packer.add_item(item)
 
 
-def refresh_bin_types(bin_types, packer):
+def add_bins_to_packer(bin_types, packer):
     for bin in bin_types:
-        packer.add_bin(bin)
+        packer.add_bin(deepcopy(bin))
 
 
-def execute_packing(items_to_fit: list, bin_types: list, visualize=False, export_img=False, textualize=False) -> list:
-    fitted_items = []   # list of solutions
+def get_best_bins(items_to_fit: list, bin_types: list, visualize=False, export_img=False, textualize=False) -> List[Bin]:
+    best_bins: List[Bin] = []
     tree = Tree("Packing list:", highlight=True, hide_root=True)
     while items_to_fit:
         packer = Packer()
-        refresh_bin_types(bin_types, packer)
+        add_bins_to_packer(bin_types, packer)
         refresh_items(items_to_fit, packer)
         packer.pack(bigger_first=True)
-        best_bin = max(packer.bins, key=lambda b: b.efficacy)    # select the best packed bin
-        for item in best_bin.items:
-            fitted_items.append((item, best_bin))           # add item+bin to solutions
+        best_bin = max(packer.bins, key=lambda b: b.efficacy)  # select the best packed bin and copy it
+        best_bins.append(best_bin)
         if textualize:
             textualize_results(tree, best_bin)
         if visualize:
@@ -83,14 +83,13 @@ def execute_packing(items_to_fit: list, bin_types: list, visualize=False, export
             if export_img:
                 raise Exception("Export of image can be done only when visualize=True")
 
-        items_to_fit = deepcopy(best_bin.unfitted_items)
-        packer.clear_bins()
+        items_to_fit = best_bin.unfitted_items
     print(tree)
-    return fitted_items
+    return best_bins
 
 
 # bins = load_box_types()
 # items = load_items_types()
 # items_to_fit = create_items(items)
 # bin_types = create_bins(bins)
-# execute_packing(items_to_fit, bin_types, visualize=False, textualize=False)
+# get_best_bins(items_to_fit, bin_types, visualize=False, textualize=False)

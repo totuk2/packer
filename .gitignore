@@ -4,6 +4,8 @@ dist
 *.egg-info
 .pypirc
 .vscode
-/.idea/
+.idea
 .reports
 /.pytest_cache/
+
+/.coverage
