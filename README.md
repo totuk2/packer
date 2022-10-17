@@ -1,101 +1,141 @@
 3D Bin Packing
 ====
 
-3D Bin Packing implementation based on [this paper](erick_dube_507-034.pdf). The code is based on [gedex](https://github.com/gedex/bp3d) implementation in Go.
+This project is a fork from Enzo Ruiz implementation of 3D Bin Packing available [here](https://github.com/enzoruiz/3dbinpacking.git) version py3dbp==1.1.2.
+Original 3D Bin Packing implementation is based on [this paper](erick_dube_507-034.pdf). The code is based on [gedex](https://github.com/gedex/bp3d) implementation in Go.
 
 ## Features
 1. Sorting Bins and Items:
-    ```[bigger_first=False/True]``` By default all the bins and items are sorted from the smallest to the biggest, also it can be vice versa, to make the packing in such ordering.
-2. Item Distribution:
-    - ```[distribute_items=True]``` From a list of bins and items, put the items in the bins that at least one item be in one bin that can be fitted. That is, distribute all the items in all the bins so that they can be contained.
-    - ```[distribute_items=False]``` From a list of bins and items, try to put all the items in each bin and in the end it show per bin all the items that was fitted and the items that was not.
+    ```[bigger_first=False/True | default=True]``` By default all the bins and items are sorted from the biggest to the smallest, also it can be vice versa, to make the packing in such ordering.
+    
+2. Item Distribution *Feature is **deprecated** and will be removed as no longer useful*:
+    ~~- ```[distribute_items=True]``` From a list of bins and items, put the items in the bins that at least one item be in one bin that can be fitted. That is, distribute all the items in all the bins so that they can be contained.~~
+    ~~- ```[distribute_items=False]``` From a list of bins and items, try to put all the items in each bin and in the end it show per bin all the items that was fitted and the items that was not.~~
+   
 3. Number of decimals:
     ```[number_of_decimals=X]``` Define the limits of decimals of the inputs and the outputs. By default is 3.
 
-## Install
+4. Visualisation of packed bins:
+    ```[visualize=False/True | default=False]``` Plots the items fitted into the bins. 
+    ```[export_img=False/True | default=False]``` While ```visualize=True``` it is possible to export the visual configuration of each bin to .png file to separate           folder: reports.
+    
+5. Textualization of packed bins:
+    ```[textualize=True/False | default=False]``` Prints to console the packing list as the tree of bins and items packed into each of the bins.
 
-```
-pip install py3dbp
-```
 
 ## Basic Explanation
 
-Bin and Items have the same creation params:
-```
-my_bin = Bin(name, width, height, depth, max_weight)
-my_item = Item(name, width, height, depth, weight)
-```
-Packer have three main functions:
-```
-packer = Packer()           # PACKER DEFINITION
-
-packer.add_bin(my_bin)      # ADDING BINS TO PACKER
-packer.add_item(my_item)    # ADDING ITEMS TO PACKER
-
-packer.pack()               # PACKING - by default (bigger_first=False, distribute_items=False, number_of_decimals=3)
+### 1. Load the bin types and item types
+Bin types and items to be fitted are loaded from the JSON files:
+1. ```load_box_types(file="boxes.json")``` - will load the bin types that are available to fit the items in. Each bin should be defined in JSON file as below:
+```json
+{
+  "box_type": {
+    "name": str,
+    "width": float,
+    "hight": float,
+    "depth": float,
+    "max_weight": float}
 ```
 
-After packing:
+2. ```load_items_types(file="items.json")``` - will load the items details that should be fitted into the bins. It is possible to create multiple items of the same type by defining the `quatity`. Items details should be defined in JSON file as below:
+```json
+{
+  "item_type": {
+    "name": str ,
+    "quantity": int ,
+    "width": float ,
+    "hight": float ,
+    "depth": float ,
+    "weight": float }
+}
 ```
-packer.bins                 # GET ALL BINS OF PACKER
-my_bin.items                # GET ALL FITTED ITEMS IN EACH BIN
-my_bin.unfitted_items       # GET ALL UNFITTED ITEMS IN EACH BIN
-```
+
+
+### 2. Create Bins and Items objects from the previously loaded JSON files
+
+- ```create_bins(bins: dict) -> list``` 
+   - will create the list of Bin types objects from previously loaded JSON file.
+- ```create_items(items: dict) -> list``` 
+   - will create the list of Items objects in number specified by ```quantity``` parameter in previously loaded JSON file.
+
+-   Bin and Items have the same creation params:
+    - ```
+      my_bin = Bin(name, width, height, depth, max_weight)
+      my_item = Item(name, width, height, depth, weight)
+      ```
+
+
+### 3. Initialize instance of Packer
+
+- ```python
+  packer = Packer()              # Packer definition
+  ```
+
+#### Methods to be used on packers instance:
+- ```python
+  packer.add_bin(my_bin)         # Adding Bins to packer instance
+  ```
+    - `my_bin` will be added to packer.bins as one of the types of bins that can be used to pack items. 
+    
+- ```python
+  packer.add_item(my_item)       # Adding Items to packer instance 
+  ```
+    - `my_item` will be added to packer.items to be fittedd into the bins
+    
+- ```python
+  packer.remove_item(my_item)    # Removes Item from packer instance
+  ```
+
+- ```python
+  packer.clear_bins(type="all")         # Clear packer.bins
+  ```
+    - Argument type can take values: "all" (default) | "fitted" | "unfitted" 
+    
+ - ```python
+   packer.pack()                 # Analyze the Items fitting each Bin  - by default (bigger_first=False ~~distribute_items=False,~~ number_of_decimals=3)
+   ```
+    - method tries to fit all Items added to `packer` to all Bins added to `packer`. Calling this function will result in each Bin being filled with as many Item as possible. After calling this method each of the Bin in `packer` instance will hold:
+        - `my_bin.items` - the list of fitted items
+        - `my_bin.unfitted_items - the list of items that could not have been fitted into this bin
+
+
+### 4. Use `execute_packing()` function to find the most optimal way of packing all items into available box types. 
+
+- `execute_packing(items_to_fit, bin_types, visualize=False, export_img=False, textualize=False)`
+    - items_to_fit: holds the list of Item type objects
+    - bin_types: holds the list of Bin type objects
+    - visualize=True will present the packing results in the 3D visualisation
+    - export_img=True will save the visualistation to separate .png file in /reports 
+    - textualize=True will print to console the packing list as the tree of bins and items packed into each of the bins.
+
+- the function workflow is as follow:
+    - run the packer.pack() on the initiated items/bins
+    - find the bin which was packed in the most effective way (as a % of bin volume utilized by packed items)
+    - save this bin and all fitted items to the list of results
+    - take all the bins that were not fitted and re-iterate the packer.pack() on those objects 
+    - do until there are no unfitted items left
+
+Function will return (item, bin) tuple.
 
 
 ## Usage
 
-```
+```python
 from py3dbp import Packer, Bin, Item
+from py3dbp import execute_packing
 
-packer = Packer()
+bins = load_box_types()                  # load available bin types from JSON file  <-- 'box' should be refactored to 'bins'
+items = load_items_types()               # load the items which needs to be packed from JSON file
 
-packer.add_bin(Bin('small-envelope', 11.5, 6.125, 0.25, 10))
-packer.add_bin(Bin('large-envelope', 15.0, 12.0, 0.75, 15))
-packer.add_bin(Bin('small-box', 8.625, 5.375, 1.625, 70.0))
-packer.add_bin(Bin('medium-box', 11.0, 8.5, 5.5, 70.0))
-packer.add_bin(Bin('medium-2-box', 13.625, 11.875, 3.375, 70.0))
-packer.add_bin(Bin('large-box', 12.0, 12.0, 5.5, 70.0))
-packer.add_bin(Bin('large-2-box', 23.6875, 11.75, 3.0, 70.0))
+items_to_fit = create_items(items)       # create objects to be passed to packer
+bin_types = create_bins(bins)            # create bin types to which we will pack the items
 
-packer.add_item(Item('50g [powder 1]', 3.9370, 1.9685, 1.9685, 1))
-packer.add_item(Item('50g [powder 2]', 3.9370, 1.9685, 1.9685, 2))
-packer.add_item(Item('50g [powder 3]', 3.9370, 1.9685, 1.9685, 3))
-packer.add_item(Item('250g [powder 4]', 7.8740, 3.9370, 1.9685, 4))
-packer.add_item(Item('250g [powder 5]', 7.8740, 3.9370, 1.9685, 5))
-packer.add_item(Item('250g [powder 6]', 7.8740, 3.9370, 1.9685, 6))
-packer.add_item(Item('250g [powder 7]', 7.8740, 3.9370, 1.9685, 7))
-packer.add_item(Item('250g [powder 8]', 7.8740, 3.9370, 1.9685, 8))
-packer.add_item(Item('250g [powder 9]', 7.8740, 3.9370, 1.9685, 9))
-
-packer.pack()
-
-for b in packer.bins:
-    print(":::::::::::", b.string())
-
-    print("FITTED ITEMS:")
-    for item in b.items:
-        print("====> ", item.string())
-
-    print("UNFITTED ITEMS:")
-    for item in b.unfitted_items:
-        print("====> ", item.string())
-
-    print("***************************************************")
-    print("***************************************************")
-
+execute_packing(items_to_fit, bin_types, visualize=False, textualize=False)     # do the packing
 ```
 
-## Latest Stable Version
-    py3dbp==1.1.2
 
-## Versioning
-- **1.x**
-    - Two ways to distribute items (all items in all bins - all items in each bin).
-    - Get per bin the fitted and unfitted items.
-    - Set the limit of decimals of inputs and outputs.
-- **0.x**
-    - Try to put all items in the first bin that can fit at least one.
+
 
 ## Credit
 
