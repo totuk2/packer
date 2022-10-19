@@ -42,7 +42,7 @@ def create_bins(bins: dict) -> list:
     return bins_list
 
 
-def refresh_items(unfitted_items, packer):
+def add_items_to_packer(unfitted_items, packer):
     for item in unfitted_items:
         packer.add_item(item)
 
@@ -53,25 +53,16 @@ def add_bins_to_packer(bin_types, packer):
 
 
 def get_best_bins(items_to_fit: list, bin_types: list, bigger_first=True) -> List[Bin]:
-
     best_bins: List[Bin] = []
 
     while items_to_fit:
         packer = Packer()
         add_bins_to_packer(bin_types, packer)
-        refresh_items(items_to_fit, packer)
+        add_items_to_packer(items_to_fit, packer)
         packer.pack(bigger_first=bigger_first)
+
         best_bin = packer.get_most_filled_bin()
         best_bins.append(best_bin)
         items_to_fit = best_bin.unfitted_items
 
     return best_bins
-
-
-bins = load_box_types()
-items = load_items_types()
-items_to_fit = create_items(items)
-bin_types = create_bins(bins)
-best_bins = get_best_bins(items_to_fit, bin_types)
-textualize_results(best_bins)
-visualize_results(best_bins)
