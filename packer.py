@@ -8,24 +8,14 @@ from py3dbp.auxiliary_methods import plot_box_and_items, textualize_results
 
 
 def load_box_types(file="boxes.json"):
-    """Imports JSON file with definitions of boxes available."""
-    try:
-        with open(file) as f:
-            bins = json.load(f)
-    except FileNotFoundError:
-        print("File not found.")
-        return 1
+    with open(file) as f:
+        bins = json.load(f)
     return bins
 
 
 def load_items_types(file="items.json"):
-    """Imports items from the basket in JSON format"""
-    try:
-        with open(file) as f:
-            items = json.load(f)
-    except FileNotFoundError:
-        print("File not found.")
-        return 1
+    with open(file) as f:
+        items = json.load(f)
     return items
 
 
@@ -64,15 +54,17 @@ def add_bins_to_packer(bin_types, packer):
         packer.add_bin(deepcopy(bin))
 
 
-def get_best_bins(items_to_fit: list, bin_types: list, visualize=False, export_img=False, textualize=False) -> List[Bin]:
+def get_best_bins(items_to_fit: list, bin_types: list, bigger_first=True,
+                  visualize=False, export_img=False, textualize=False) -> List[Bin]:
     best_bins: List[Bin] = []
     tree = Tree("Packing list:", highlight=True, hide_root=True)
+
     while items_to_fit:
         packer = Packer()
         add_bins_to_packer(bin_types, packer)
         refresh_items(items_to_fit, packer)
-        packer.pack(bigger_first=True)
-        best_bin = max(packer.bins, key=lambda b: b.efficacy)  # select the best packed bin and copy it
+        packer.pack(bigger_first=bigger_first)
+        best_bin = packer.get_most_filled_bin()
         best_bins.append(best_bin)
         if textualize:
             textualize_results(tree, best_bin)
