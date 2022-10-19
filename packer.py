@@ -2,9 +2,7 @@ from typing import List
 from copy import deepcopy
 import json
 from py3dbp import Item, Bin, Packer
-from rich import print
-from rich.tree import Tree
-from py3dbp.auxiliary_methods import plot_box_and_items, textualize_results
+from py3dbp.auxiliary_methods import visualize_results, textualize_results
 
 
 def load_box_types(file="boxes.json"):
@@ -54,10 +52,9 @@ def add_bins_to_packer(bin_types, packer):
         packer.add_bin(deepcopy(bin))
 
 
-def get_best_bins(items_to_fit: list, bin_types: list, bigger_first=True,
-                  visualize=False, export_img=False, textualize=False) -> List[Bin]:
+def get_best_bins(items_to_fit: list, bin_types: list, bigger_first=True) -> List[Bin]:
+
     best_bins: List[Bin] = []
-    tree = Tree("Packing list:", highlight=True, hide_root=True)
 
     while items_to_fit:
         packer = Packer()
@@ -66,22 +63,15 @@ def get_best_bins(items_to_fit: list, bin_types: list, bigger_first=True,
         packer.pack(bigger_first=bigger_first)
         best_bin = packer.get_most_filled_bin()
         best_bins.append(best_bin)
-        if textualize:
-            textualize_results(tree, best_bin)
-        if visualize:
-            plot_box_and_items(best_bin, export_img=export_img,
-                               title=f'{best_bin.name} | efficacy: {best_bin.efficacy * 100:.2f}%')
-        else:
-            if export_img:
-                raise Exception("Export of image can be done only when visualize=True")
-
         items_to_fit = best_bin.unfitted_items
-    print(tree)
+
     return best_bins
 
 
-# bins = load_box_types()
-# items = load_items_types()
-# items_to_fit = create_items(items)
-# bin_types = create_bins(bins)
-# get_best_bins(items_to_fit, bin_types, visualize=False, textualize=False)
+bins = load_box_types()
+items = load_items_types()
+items_to_fit = create_items(items)
+bin_types = create_bins(bins)
+best_bins = get_best_bins(items_to_fit, bin_types)
+textualize_results(best_bins)
+visualize_results(best_bins)
