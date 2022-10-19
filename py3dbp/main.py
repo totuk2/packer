@@ -10,7 +10,7 @@ START_POSITION = [0, 0, 0]
 class Item:
     def __init__(self, name: str, width: float, height: float, depth: float, weight: float):
         if width <= 0 or height <= 0 or depth <= 0 or weight <= 0:
-            Exception('Dimensions has to be more then 0.')
+            raise Exception('Dimensions has to be more then 0.')
         self.name: str = name
         self.width: float = width
         self.height: float = height
@@ -58,7 +58,10 @@ class Item:
 
 
 class Bin:
-    def __init__(self, name, width, height, depth, max_weight):
+    def __init__(self, name: str, width: float, height: float, depth: float, max_weight: float):
+        if width <= 0 or height <= 0 or depth <= 0 or max_weight <= 0:
+            raise Exception('Dimensions has to be more then 0.')
+
         self.name = name
         self.width = width
         self.height = height
@@ -76,12 +79,6 @@ class Bin:
         self.depth = set_to_decimal(self.depth, number_of_decimals)
         self.max_weight = set_to_decimal(self.max_weight, number_of_decimals)
         self.number_of_decimals = number_of_decimals
-
-    def string(self):
-        return "%s(%sx%sx%s, max_weight:%s) vol(%s)" % (
-            self.name, self.width, self.height, self.depth, self.max_weight,
-            self.get_volume()
-        )
 
     def get_volume(self):
         return set_to_decimal(
