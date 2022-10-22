@@ -8,7 +8,6 @@ from py3dbp import Item, Bin, Packer
 TEST_FOLDER = Path(__file__).resolve().parent
 
 
-@pytest.mark.xfail(reason="no validation on Item class")
 def test_items_creation_when_dims_negative_or_zero():
     dim_value = [-1, 0, 1]
     number_of_dims = 4
@@ -19,7 +18,6 @@ def test_items_creation_when_dims_negative_or_zero():
                 Item('test_item', width, hight, depth, weight)
 
 
-@pytest.mark.xfail(reason="no validation on Bin class")
 def test_bin_creation_when_dims_negative_or_zero():
     dim_value = [-1, 0, 1]
     number_of_dims = 4
@@ -37,7 +35,6 @@ def test_items_creation_when_dims_nan():
         item.get_volume()
 
 
-@pytest.mark.xfail(reason="no validation on Bin class")
 def test_bin_creation_when_dims_nan():
     width, hight, depth, max_weight = ['a', 'b', 'c', 'd']
     with pytest.raises(Exception):
@@ -91,11 +88,10 @@ def test_packer_fills_entire_box():
              Item('test_item4', 5, 5, 5, 5)]
     bins = [Bin('test_bin1', 10, 10, 5, 20)]
     solutions = get_best_bins(items, bins, visualize=False, textualize=False)
-    bins_used = set(bins[1] for bins in solutions)
+    bins_used = set(bin for bin in solutions)
     assert len(bins_used) == 1
 
 
-# @pytest.mark.xfail(run=True, reason="packer's fitted_items solution lists [item, bin_type], not specific bin")
 def test_packer_respects_bin_constraints():
     items = [Item('test_item1', 5, 5, 5, 5),
              Item('test_item2', 5, 5, 5, 5),
@@ -142,8 +138,6 @@ def test_packer_remove_item():
     assert len(packer.items) == 0
 
 
-# @pytest.mark.skip(reason="This test passes, however it is not showing what should. It will show correct results"
-#                          "when Issue #14 is solved and test test_packer_respects_bin_constraints() passes.")
 def test_execute_packing_optimum_volume_results():
     bins = load_box_types(file=f"{TEST_FOLDER}/boxes_test.json")
     items = load_items_types(file=f"{TEST_FOLDER}/items_test.json")

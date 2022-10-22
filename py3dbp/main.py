@@ -10,7 +10,7 @@ START_POSITION = [0, 0, 0]
 class Item:
     def __init__(self, name: str, width: float, height: float, depth: float, weight: float):
         if width <= 0 or height <= 0 or depth <= 0 or weight <= 0:
-            Exception('Dimensions has to be more then 0.')
+            raise Exception('Dimensions has to be more then 0.')
         self.name: str = name
         self.width: float = width
         self.height: float = height
@@ -20,18 +20,18 @@ class Item:
         self.position = START_POSITION
         self.number_of_decimals = DEFAULT_NUMBER_OF_DECIMALS
 
-    def format_numbers(self, number_of_decimals):
+    def __str__(self):
+        return "%s(%sx%sx%s, weight: %s) pos(%s) rt(%s) vol(%s)" % (
+            self.name, self.width, self.height, self.depth, self.weight,
+            self.position, self.rotation_type, self.get_volume()
+        )
+
+    def format_numbers(self, number_of_decimals: int):
         self.width = set_to_decimal(self.width, number_of_decimals)
         self.height = set_to_decimal(self.height, number_of_decimals)
         self.depth = set_to_decimal(self.depth, number_of_decimals)
         self.weight = set_to_decimal(self.weight, number_of_decimals)
         self.number_of_decimals = number_of_decimals
-
-    def string(self):
-        return "%s(%sx%sx%s, weight: %s) pos(%s) rt(%s) vol(%s)" % (
-            self.name, self.width, self.height, self.depth, self.weight,
-            self.position, self.rotation_type, self.get_volume()
-        )
 
     def get_volume(self):
         return set_to_decimal(
@@ -58,7 +58,10 @@ class Item:
 
 
 class Bin:
-    def __init__(self, name, width, height, depth, max_weight):
+    def __init__(self, name: str, width: float, height: float, depth: float, max_weight: float):
+        if width <= 0 or height <= 0 or depth <= 0 or max_weight <= 0:
+            raise Exception('Dimensions has to be more then 0.')
+
         self.name = name
         self.width = width
         self.height = height
@@ -70,18 +73,18 @@ class Bin:
         self.efficacy = 0
         self.packer_owner: Packer or None = None
 
+    def __str__(self):
+        return "%s(%sx%sx%s, max_weight:%s) vol(%s)" % (
+            self.name, self.width, self.height, self.depth, self.max_weight,
+            self.get_volume()
+        )
+
     def format_numbers(self, number_of_decimals):
         self.width = set_to_decimal(self.width, number_of_decimals)
         self.height = set_to_decimal(self.height, number_of_decimals)
         self.depth = set_to_decimal(self.depth, number_of_decimals)
         self.max_weight = set_to_decimal(self.max_weight, number_of_decimals)
         self.number_of_decimals = number_of_decimals
-
-    def string(self):
-        return "%s(%sx%sx%s, max_weight:%s) vol(%s)" % (
-            self.name, self.width, self.height, self.depth, self.max_weight,
-            self.get_volume()
-        )
 
     def get_volume(self):
         return set_to_decimal(
@@ -149,7 +152,7 @@ class Packer:
     def __init__(self):
         self.bins: List[Bin] = []
         self.items: List[Item] = []
-        self.total_items = 0
+        self.total_items: int = 0
 
     def add_bin(self, bin: Bin):
         if bin.packer_owner is not None:
