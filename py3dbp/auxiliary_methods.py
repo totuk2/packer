@@ -1,6 +1,8 @@
 from decimal import Decimal
 from .constants import Axis
 import matplotlib.pyplot as plt
+from rich import print
+from rich.tree import Tree
 
 
 def rect_intersect(item1, item2, x, y):
@@ -71,13 +73,20 @@ def plot_box_and_items(bin, export_img, title=""):
     plt.show()
 
 
-def textualize_results(tree, best_bin):
-    tree.hide_root = False
-    bins_tree = tree.add(f'{best_bin.name}; w:{best_bin.width}; h:{best_bin.height}; d:{best_bin.depth}; '
-                         f'packed: {len(best_bin.items)} of {len(best_bin.items + best_bin.unfitted_items)}; '
-                         f'{best_bin.efficacy * 100:.2f}% used')
-    for item in best_bin.items:
-        bins_tree.add(
-            f'[blue]{item.name}[/blue] /position/ w:{item.position[0]} x h:{item.position[1]} x '
-            f'd:{item.position[2]} x /rotarion/ type: {item.rotation_type}')
-    return tree
+def textualize_results(best_bins):
+    tree = Tree("Packing list:", highlight=True)
+    for best_bin in best_bins:
+        bins_tree = tree.add(f'{best_bin.name}; w:{best_bin.width}; h:{best_bin.height}; d:{best_bin.depth}; '
+                             f'packed: {len(best_bin.items)} of {len(best_bin.items + best_bin.unfitted_items)}; '
+                             f'{best_bin.efficacy * 100:.2f}% used')
+        for item in best_bin.items:
+            bins_tree.add(
+                f'[blue]{item.name}[/blue] /position/ w:{item.position[0]} x h:{item.position[1]} x '
+                f'd:{item.position[2]} x /rotarion/ type: {item.rotation_type}')
+    return print(tree)
+
+
+def visualize_results(best_bins, export_img=False):
+    for best_bin in best_bins:
+        plot_box_and_items(best_bin, export_img=export_img,
+                           title=f'{best_bin.name} | efficacy: {best_bin.efficacy * 100:.2f}%')

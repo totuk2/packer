@@ -165,6 +165,9 @@ class Packer:
 
         return self.items.append(item)
 
+    def get_most_filled_bin(self):
+        return max(self.bins, key=lambda b: b.efficacy)
+
     def remove_item(self, item):
         self.total_items = len(self.items) - 1
 

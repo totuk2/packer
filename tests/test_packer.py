@@ -28,13 +28,6 @@ def test_bin_creation_when_dims_negative_or_zero():
                 Item('test_bin', width, hight, depth, max_weight)
 
 
-def test_items_creation_when_dims_nan():
-    width, height, depth, weight = ['a', 'b', 'c', 'd']
-    with pytest.raises(Exception):
-        item = Item('test_item', width, height, depth, weight)
-        item.get_volume()
-
-
 def test_bin_creation_when_dims_nan():
     width, hight, depth, max_weight = ['a', 'b', 'c', 'd']
     with pytest.raises(Exception):
@@ -65,7 +58,6 @@ def test_bin_efficacy_calculus():
 
 
 def test_bin_get_volume():
-    # proper calculations
     bin = Bin('test_bin', 10, 10, 10, 10)
     assert bin.get_volume() == 1000
 
@@ -76,18 +68,18 @@ def test_return_types():
              Item('test_item3', 5, 5, 5, 5),
              Item('test_item4', 5, 5, 5, 5)]
     bins = [Bin('test_bin1', 10, 10, 5, 20)]
-    solutions = get_best_bins(items, bins, visualize=False, textualize=False)
+    solutions = get_best_bins(items, bins)
     assert type(solutions) == list
 
 
 def test_packer_fills_entire_box():
-    # ISSUE: this test does not show the number of bins the items were packed to, but the number of bin types!!!
     items = [Item('test_item1', 5, 5, 5, 5),
              Item('test_item2', 5, 5, 5, 5),
              Item('test_item3', 5, 5, 5, 5),
              Item('test_item4', 5, 5, 5, 5)]
     bins = [Bin('test_bin1', 10, 10, 5, 20)]
-    solutions = get_best_bins(items, bins, visualize=False, textualize=False)
+
+    solutions = get_best_bins(items, bins)
     bins_used = set(bin for bin in solutions)
     assert len(bins_used) == 1
 
@@ -98,7 +90,7 @@ def test_packer_respects_bin_constraints():
              Item('test_item3', 5, 5, 5, 5),
              Item('test_item4', 5, 5, 5, 5)]
     bins = [Bin('test_bin1', 10, 10, 5, 10)]
-    solutions = get_best_bins(items, bins, visualize=False, textualize=False)
+    solutions = get_best_bins(items, bins)
     bins_used = len(solutions)
     assert bins_used == 2
 
@@ -113,7 +105,7 @@ def test_packer_rises_exception_on_item_too_large_to_fit():
     for item in items:
         if item.width == 2 or item.height == 2 or item.depth == 2 or item.weight == 2:
             with pytest.raises(Exception):
-                get_best_bins([item], bins, visualize=False, textualize=False)
+                get_best_bins([item], bins)
 
 
 def test_packer_add_bin():
@@ -143,7 +135,7 @@ def test_execute_packing_optimum_volume_results():
     items = load_items_types(file=f"{TEST_FOLDER}/items_test.json")
     items_to_fit = create_items(items)
     bin_types = create_bins(bins)
-    bins_used = get_best_bins(items_to_fit, bin_types, visualize=False, textualize=False)
+    bins_used = get_best_bins(items_to_fit, bin_types)
     total_volume = 0
     for box in bins_used:
         total_volume += box.get_volume()
@@ -155,7 +147,7 @@ def test_packer_items_not_packed_out_of_gauge():
     items = load_items_types(file=f"{TEST_FOLDER}/items_test.json")
     items_to_fit = create_items(items)
     bin_types = create_bins(bins)
-    best_bins: List[Bin] = get_best_bins(items_to_fit, bin_types, visualize=False, textualize=False)
+    best_bins: List[Bin] = get_best_bins(items_to_fit, bin_types)
     for bin in best_bins:
         for item in bin.items:
             assert item.position[0] + item.get_dimension()[0] <= bin.width
