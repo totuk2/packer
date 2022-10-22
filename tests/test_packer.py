@@ -78,6 +78,7 @@ def test_packer_fills_entire_box():
              Item('test_item3', 5, 5, 5, 5),
              Item('test_item4', 5, 5, 5, 5)]
     bins = [Bin('test_bin1', 10, 10, 5, 20)]
+
     solutions = get_best_bins(items, bins)
     bins_used = set(bin for bin in solutions)
     assert len(bins_used) == 1
