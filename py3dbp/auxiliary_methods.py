@@ -3,6 +3,7 @@ from .constants import Axis
 import matplotlib.pyplot as plt
 from rich import print
 from rich.tree import Tree
+import json
 
 
 def rect_intersect(item1, item2, x, y):
@@ -90,3 +91,36 @@ def visualize_results(best_bins, export_img=False):
     for best_bin in best_bins:
         plot_box_and_items(best_bin, export_img=export_img,
                            title=f'{best_bin.name} | efficacy: {best_bin.efficacy * 100:.2f}%')
+
+
+def bins_list_to_json(bin_list: list):
+    json_body = {}
+    for bin in bin_list:
+        items = items_list_to_json(bin.items)
+        unfitted_items = items_list_to_json(bin.unfitted_items)
+        json_result = {"name": bin.name,
+                       "width": str(bin.width),
+                       "height": str(bin.height),
+                       "depth": str(bin.depth),
+                       "max_weight": str(bin.max_weight),
+                       "items": items,
+                       "unfitted_items": unfitted_items,
+                       "efficacy": str(bin.efficacy)}
+        json_body = json.dumps(json_result)
+
+    return json_body
+
+
+def items_list_to_json(item_list):
+    json_body = {}
+    for item in item_list:
+        json_result = {"name": item.name,
+                       "width": str(item.width),
+                       "height": str(item.height),
+                       "depth": str(item.depth),
+                       "weight": str(item.weight),
+                       "rotation_type": str(item.rotation_type),
+                       "position": str(item.position)}
+        json_body = json.dumps(json_result)
+
+    return json_body
