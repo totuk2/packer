@@ -2,7 +2,7 @@ from typing import List
 from copy import deepcopy
 import json
 from py3dbp import Item, Bin, Packer
-from py3dbp.auxiliary_methods import visualize_results, textualize_results
+from py3dbp.auxiliary_methods import dump_binlist_to_json
 
 
 def load_box_types(file="boxes.json"):

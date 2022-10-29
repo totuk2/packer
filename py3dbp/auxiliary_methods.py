@@ -108,19 +108,46 @@ def bins_list_to_json(bin_list: list):
                        "efficacy": str(bin.efficacy)}
         json_body = json.dumps(json_result)
 
-    return json_body
+    dict_body = {
+        'name': item.name,
+        'width': float(item.width),
+        'height': float(item.height),
+        'depth': float(item.depth),
+        'weight': float(item.weight),
+        'rotation_type': int(item.rotation_type),
+        'position': (float(x), float(y), float(z))
+                }
+
+    return dict_body
 
 
-def items_list_to_json(item_list):
-    json_body = {}
+def dump_itemlist_to_json(item_list: List) -> List[Dict]:
+    items_json_body = []
     for item in item_list:
-        json_result = {"name": item.name,
-                       "width": str(item.width),
-                       "height": str(item.height),
-                       "depth": str(item.depth),
-                       "weight": str(item.weight),
-                       "rotation_type": str(item.rotation_type),
-                       "position": str(item.position)}
-        json_body = json.dumps(json_result)
+        items_json_body.append(create_dict_from_item(item))
 
-    return json_body
+    return items_json_body
+
+
+def create_json_from_bin(bin) -> Dict:
+    items: List[Dict] = dump_itemlist_to_json(bin.items)
+    bin_json_body = {
+        'name': bin.name,
+        'width': float(bin.width),
+        'height': float(bin.height),
+        'depth': float(bin.depth),
+        'max_weight': float(bin.max_weight),
+        'items': items,
+        'efficacy': float(bin.efficacy)
+                }
+    return bin_json_body
+
+
+def dump_binlist_to_json(bin_list: List) -> Dict:
+    bins_json_body: Dict = {}
+    for bin_number, bin in enumerate(bin_list):
+        bins_json_body |= {
+           bin_number: create_json_from_bin(bin)
+        }
+
+    return bins_json_body
