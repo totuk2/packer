@@ -10,7 +10,7 @@ app = FastAPI()
 
 
 @app.post("/packer")
-def pack(items: Dict[Item], bins: Dict[Bin]):
+def pack(items: Dict, bins: Dict):
     bin_types: List[Bin] = create_bins(bins)
     items_to_pack: List[Item] = create_items(items)
     best_packed_bins: List[Bin] = get_best_bins(items_to_pack, bin_types)

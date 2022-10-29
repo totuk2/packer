@@ -1,23 +1,22 @@
-from typing import List
+from typing import List, Dict
 from copy import deepcopy
 import json
 from py3dbp import Item, Bin, Packer
-from py3dbp.auxiliary_methods import dump_binlist_to_json
 
 
-def load_box_types(file="boxes.json"):
+def load_box_types(file="boxes.json") -> Dict:
     with open(file) as f:
         bins = json.load(f)
     return bins
 
 
-def load_items_types(file="items.json"):
+def load_items_types(file="items.json") -> Dict:
     with open(file) as f:
         items = json.load(f)
     return items
 
 
-def create_items(items: dict) -> list:
+def create_items(items: Dict) -> List[Item]:
     item_list = []
     for item in items:
         for number in range(items[item]['quantity']):
@@ -30,7 +29,7 @@ def create_items(items: dict) -> list:
     return item_list
 
 
-def create_bins(bins: dict) -> list:
+def create_bins(bins: Dict) -> List[Bin]:
     bins_list = []
     for bin in bins:
         bins_list.append(Bin(
@@ -42,17 +41,17 @@ def create_bins(bins: dict) -> list:
     return bins_list
 
 
-def add_items_to_packer(unfitted_items, packer):
+def add_items_to_packer(unfitted_items: List[Item], packer: Packer) -> None:
     for item in unfitted_items:
         packer.add_item(item)
 
 
-def add_bins_to_packer(bin_types, packer):
+def add_bins_to_packer(bin_types: List[Bin], packer: Packer) -> None:
     for bin in bin_types:
         packer.add_bin(deepcopy(bin))
 
 
-def get_best_bins(items_to_fit: list, bin_types: list, bigger_first=True) -> List[Bin]:
+def get_best_bins(items_to_fit: List[Item], bin_types: List[Bin], bigger_first=True) -> List[Bin]:
     best_bins: List[Bin] = []
 
     while items_to_fit:
