@@ -16,9 +16,9 @@ class Item:
         self.height: float = height
         self.depth: float = depth
         self.weight: float = weight
-        self.rotation_type = 0
-        self.position = START_POSITION
-        self.number_of_decimals = DEFAULT_NUMBER_OF_DECIMALS
+        self.rotation_type: int = 0
+        self.position: list = START_POSITION
+        self.number_of_decimals: int = DEFAULT_NUMBER_OF_DECIMALS
 
     def __str__(self):
         return "%s(%sx%sx%s, weight: %s) pos(%s) rt(%s) vol(%s)" % (
