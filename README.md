@@ -7,21 +7,18 @@ Original 3D Bin Packing implementation is based on [this paper](erick_dube_507-0
 ## Features
 1. Sorting Bins and Items:
     ```[bigger_first=False/True | default=True]``` By default all the bins and items are sorted from the biggest to the smallest, also it can be vice versa, to make the packing in such ordering.
-    
-2. Item Distribution *Feature is **deprecated** and will be removed as no longer useful*:
-    ~~- ```[distribute_items=True]``` From a list of bins and items, put the items in the bins that at least one item be in one bin that can be fitted. That is, distribute all the items in all the bins so that they can be contained.~~
-    ~~- ```[distribute_items=False]``` From a list of bins and items, try to put all the items in each bin and in the end it show per bin all the items that was fitted and the items that was not.~~
    
-3. Number of decimals:
+2. Number of decimals:
     ```[number_of_decimals=X]``` Define the limits of decimals of the inputs and the outputs. By default is 3.
 
-4. Visualisation of packed bins:
-    ```[visualize=False/True | default=False]``` Plots the items fitted into the bins. 
-    ```[export_img=False/True | default=False]``` While ```visualize=True``` it is possible to export the visual configuration of each bin to .png file to separate           folder: reports.
+3. Visualisation of packed bins:
+    ```visualize_results(best_bins: List[Bin], export_img=False)``` Plots the items fitted into the bins. 
+    ```[export_img=False/True | default=False]``` - it is possible to export the visual configuration of each bin to .png file to separate folder: reports.
     
-5. Textualization of packed bins:
-    ```[textualize=True/False | default=False]``` Prints to console the packing list as the tree of bins and items packed into each of the bins.
+4. Textualization of packed bins:
+    ```textualize_results(best_bins: List[Bin])``` Prints to console the packing list as the tree of bins and items packed into each of the bins.
 
+5. API returning best packed bins in JSON format
 
 ## Basic Explanation
 
@@ -86,11 +83,6 @@ Bin types and items to be fitted are loaded from the JSON files:
 - ```python
   packer.remove_item(my_item)    # Removes Item from packer instance
   ```
-
-- ```python
-  packer.clear_bins(type="all")         # Clear packer.bins
-  ```
-    - Argument type can take values: "all" (default) | "fitted" | "unfitted" 
     
  - ```python
    packer.pack()                 # Analyze the Items fitting each Bin  - by default (bigger_first=False ~~distribute_items=False,~~ number_of_decimals=3)
@@ -105,9 +97,6 @@ Bin types and items to be fitted are loaded from the JSON files:
 - `execute_packing(items_to_fit, bin_types, visualize=False, export_img=False, textualize=False)`
     - items_to_fit: holds the list of Item type objects
     - bin_types: holds the list of Bin type objects
-    - visualize=True will present the packing results in the 3D visualisation
-    - export_img=True will save the visualistation to separate .png file in /reports 
-    - textualize=True will print to console the packing list as the tree of bins and items packed into each of the bins.
 
 - the function workflow is as follow:
     - run the packer.pack() on the initiated items/bins
@@ -116,7 +105,7 @@ Bin types and items to be fitted are loaded from the JSON files:
     - take all the bins that were not fitted and re-iterate the packer.pack() on those objects 
     - do until there are no unfitted items left
 
-Function will return (item, bin) tuple.
+Function will return best_packed_bins list.
 
 
 ## Usage
@@ -131,7 +120,7 @@ items = load_items_types()               # load the items which needs to be pack
 items_to_fit = create_items(items)       # create objects to be passed to packer
 bin_types = create_bins(bins)            # create bin types to which we will pack the items
 
-execute_packing(items_to_fit, bin_types, visualize=False, textualize=False)     # do the packing
+execute_packing(items_to_fit: List[Item], bin_types: List[Bin])     # do the packing
 ```
 
 
