@@ -9,7 +9,7 @@ START_POSITION = [0, 0, 0]
 
 class Item:
     def __init__(self, name: str, width: float, height: float, depth: float, weight: float):
-        if width <= 0 or height <= 0 or depth <= 0 or weight <= 0:
+        if any(dim <= 0 for dim in [width, height, depth, weight]):
             raise Exception('Dimensions has to be more then 0.')
         self.name: str = name
         self.width: float = width

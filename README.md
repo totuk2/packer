@@ -1,8 +1,55 @@
 3D Bin Packing
-====
+==============
 
 This project is a fork from Enzo Ruiz implementation of 3D Bin Packing available [here](https://github.com/enzoruiz/3dbinpacking.git) version py3dbp==1.1.2.
 Original 3D Bin Packing implementation is based on [this paper](erick_dube_507-034.pdf). The code is based on [gedex](https://github.com/gedex/bp3d) implementation in Go.
+
+
+## Usage - in script
+
+```python
+from py3dbp import Packer, Bin, Item
+from py3dbp import execute_packing
+
+bins = load_box_types()                  # load available bin types from JSON file  <-- 'box' should be refactored to 'bins'
+items = load_items_types()               # load the items which needs to be packed from JSON file
+
+items_to_fit = create_items(items)       # create objects to be passed to packer
+bin_types = create_bins(bins)            # create bin types to which we will pack the items
+
+execute_packing(items_to_fit: List[Item], bin_types: List[Bin])     # do the packing
+```
+
+## Usage - API
+
+1. Run the `api` script, which will setup an `uvicorn` session on [http://127.0.0.1:8000](http://127.0.0.1:8000).
+2. POST to the [http://127.0.0.1:8000/packer](http://127.0.0.1:8000/packer) endpoint in the following JSON format:
+  ```bash
+curl -X 'POST' \
+  'http://localhost:8000/packer' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "items": {
+  "item1": {
+    "name": "euro_pallet",
+    "quantity": 40,
+    "width": 2.625,
+    "hight": 5,
+    "depth": 3.94,
+    "weight": 600
+  }},
+  "bins": {
+  "container1": {
+    "name": "40_ft_container",
+    "width": 39.5,
+    "hight": 7.75,
+    "depth": 7.75,
+    "max_weight": 20000
+  }}
+}'
+```
+
 
 ## Features
 1. Sorting Bins and Items:
@@ -20,7 +67,7 @@ Original 3D Bin Packing implementation is based on [this paper](erick_dube_507-0
 
 5. API returning best packed bins in JSON format
 
-## Basic Explanation
+## Basic Concept
 
 ### 1. Load the bin types and item types
 Bin types and items to be fitted are loaded from the JSON files:
@@ -32,7 +79,9 @@ Bin types and items to be fitted are loaded from the JSON files:
     "width": float,
     "hight": float,
     "depth": float,
-    "max_weight": float}
+    "max_weight": float
+  }
+}
 ```
 
 2. ```load_items_types(file="items.json")``` - will load the items details that should be fitted into the bins. It is possible to create multiple items of the same type by defining the `quatity`. Items details should be defined in JSON file as below:
@@ -108,20 +157,6 @@ Bin types and items to be fitted are loaded from the JSON files:
 Function will return best_packed_bins list.
 
 
-## Usage
-
-```python
-from py3dbp import Packer, Bin, Item
-from py3dbp import execute_packing
-
-bins = load_box_types()                  # load available bin types from JSON file  <-- 'box' should be refactored to 'bins'
-items = load_items_types()               # load the items which needs to be packed from JSON file
-
-items_to_fit = create_items(items)       # create objects to be passed to packer
-bin_types = create_bins(bins)            # create bin types to which we will pack the items
-
-execute_packing(items_to_fit: List[Item], bin_types: List[Bin])     # do the packing
-```
 
 
 
