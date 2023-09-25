@@ -9,16 +9,16 @@ START_POSITION = [0, 0, 0]
 
 class Item:
     def __init__(self, name: str, width: float, height: float, depth: float, weight: float):
-        if width <= 0 or height <= 0 or depth <= 0 or weight <= 0:
+        if any(dim <= 0 for dim in [width, height, depth, weight]):
             raise Exception('Dimensions has to be more then 0.')
         self.name: str = name
         self.width: float = width
         self.height: float = height
         self.depth: float = depth
         self.weight: float = weight
-        self.rotation_type = 0
-        self.position = START_POSITION
-        self.number_of_decimals = DEFAULT_NUMBER_OF_DECIMALS
+        self.rotation_type: int = 0
+        self.position: list = START_POSITION
+        self.number_of_decimals: int = DEFAULT_NUMBER_OF_DECIMALS
 
     def __str__(self):
         return "%s(%sx%sx%s, weight: %s) pos(%s) rt(%s) vol(%s)" % (

@@ -3,6 +3,7 @@ from .constants import Axis
 import matplotlib.pyplot as plt
 from rich import print
 from rich.tree import Tree
+from typing import List, Dict
 
 
 def rect_intersect(item1, item2, x, y):
@@ -51,7 +52,7 @@ def _plot_cube(bin, ax, x, y, z, dx, dy, dz, color='red', lw=4):
     ax.plot3D([x+dx, x+dx], [y, y], [z, z+dz], **kwargs)
 
 
-def plot_box_and_items(bin, export_img, title=""):
+def plot_box_and_items(bin, export_img, title="") -> None:
     """ side effective. Plot the Bin and the items it contains. """
     fig = plt.figure()
     ax_glob = plt.axes(projection='3d')
@@ -73,7 +74,7 @@ def plot_box_and_items(bin, export_img, title=""):
     plt.show()
 
 
-def textualize_results(best_bins):
+def textualize_results(best_bins: List) -> None:
     tree = Tree("Packing list:", highlight=True)
     for best_bin in best_bins:
         bins_tree = tree.add(f'{best_bin.name}; w:{best_bin.width}; h:{best_bin.height}; d:{best_bin.depth}; '
@@ -86,7 +87,55 @@ def textualize_results(best_bins):
     return print(tree)
 
 
-def visualize_results(best_bins, export_img=False):
+def visualize_results(best_bins: List, export_img=False):
     for best_bin in best_bins:
         plot_box_and_items(best_bin, export_img=export_img,
                            title=f'{best_bin.name} | efficacy: {best_bin.efficacy * 100:.2f}%')
+
+
+def create_dict_from_item(item) -> Dict:
+    x, y, z = item.position
+
+    dict_body = {
+        'name': item.name,
+        'width': float(item.width),
+        'height': float(item.height),
+        'depth': float(item.depth),
+        'weight': float(item.weight),
+        'rotation_type': int(item.rotation_type),
+        'position': (float(x), float(y), float(z))
+                }
+
+    return dict_body
+
+
+def dump_itemlist_to_json(item_list: List) -> List[Dict]:
+    items_json_body = []
+    for item in item_list:
+        items_json_body.append(create_dict_from_item(item))
+
+    return items_json_body
+
+
+def create_json_from_bin(bin) -> Dict:
+    items: List[Dict] = dump_itemlist_to_json(bin.items)
+    bin_json_body = {
+        'name': bin.name,
+        'width': float(bin.width),
+        'height': float(bin.height),
+        'depth': float(bin.depth),
+        'max_weight': float(bin.max_weight),
+        'items': items,
+        'efficacy': float(bin.efficacy)
+                }
+    return bin_json_body
+
+
+def dump_binlist_to_json(bin_list: List) -> Dict:
+    bins_json_body: Dict = {}
+    for bin_number, bin in enumerate(bin_list):
+        bins_json_body |= {
+           bin_number: create_json_from_bin(bin)
+        }
+
+    return bins_json_body
