@@ -18,7 +18,3 @@ def pack(items: Dict, bins: Dict):
     json_body: Dict = dump_binlist_to_json(best_packed_bins)
 
     return json_body
-
-
-if __name__ == "__main__":
-    uvicorn.run(app, host="127.0.0.1", port=8000)
