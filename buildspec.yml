@@ -1,0 +1,23 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.9
+    commands:
+      - echo "[Install] Installing required packages..."
+      - pip install --upgrade pip
+  build:
+    commands:
+      - echo "[Build] Building the application..."
+      - mkdir -p /code/app
+      - cp requirements.txt /code/requirements.txt
+      - pip install --no-cache-dir --upgrade -r /code/requirements.txt
+      - cp -r . /code/app
+  post_build:
+    commands:
+      - echo "[Post-Build] Application built successfully"
+      - echo "[Post-Build] Exposing port 80"
+      - echo 'EXPOSE 80' >> Dockerfile
+artifacts:
+  files: Dockerfile
