@@ -1,0 +1,36 @@
+version: 2.1
+jobs:
+  build:
+    docker:
+      - image: python 3.10
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: pip install -r requirements.txt
+      - run:
+          name: Run tests
+          command: pytest
+  deploy:
+    docker:
+      - image: python 3.10
+    steps:
+      - checkout
+      - run:
+          name: Deploy to AWS EC2
+          command: |
+            # Add your deployment script/commands here
+    workflows:
+      version: 2
+      build_and_deploy:
+        jobs:
+          - build:
+              context:
+                - Docker
+          - deploy:
+              requires:
+                - build
+              filters:
+                branches:
+                  only:
+                    - main
