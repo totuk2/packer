@@ -38,9 +38,9 @@ jobs:
       - attach_workspace:
           at: ./
       - aws-cli/configure:
-          aws-region: AWS_DEFAULT_REGION
-          aws-access-key-id: AWS_ACCESS_KEY_ID
-          aws-secret-access-key: AWS_SECRET_KEY_ID
+          region: AWS_DEFAULT_REGION
+          aws_access_key_id: AWS_ACCESS_KEY_ID
+          aws_secret_access_key: AWS_SECRET_KEY_ID
       - run:
           name: Upload to S3
           command: aws s3 cp packer.zip s3://packer-lambda/packer.zip
