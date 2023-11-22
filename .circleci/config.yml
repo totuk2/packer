@@ -5,13 +5,13 @@ jobs:
   build-and-test:
     executor:
       name: python/default
-      tag: '3.7'
+      tag: '3.10'
     steps:
       - checkout
       - run:
           name: Setup Virtual Env
           command: |
-            virtualenv -p 3.7 venv
+            virtualenv -p 3.10 venv
             echo "source ./venv/bin/activate" >> $BASH_ENV
       - run:
           name: Install Dependencies
