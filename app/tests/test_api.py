@@ -4,7 +4,7 @@ from app.api import app
 client = TestClient(app)
 
 def test_packer_api_response():
-    response = client.post("/packer", json={
+    response = client.post("/", json={
                                               "items": {
                                               "item1": {
                                                 "name": "item1",
