@@ -37,7 +37,7 @@ jobs:
     steps:
       - attach_workspace:
           at: ./
-      - aws-cli/configure:
+      - aws-cli/setup:
           region: AWS_DEFAULT_REGION
           aws_access_key_id: AWS_ACCESS_KEY_ID
           aws_secret_access_key: AWS_SECRET_KEY_ID
