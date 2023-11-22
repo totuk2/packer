@@ -1,10 +1,10 @@
 from fastapi import FastAPI
-from models import Bin, Item
+from .models import Bin, Item
 from typing import List, Dict
 
 
-from packer import get_best_bins, create_bins, create_items
-from py3dbp.auxiliary_methods import dump_binlist_to_json
+from .packer import get_best_bins, create_bins, create_items
+from .py3dbp.auxiliary_methods import dump_binlist_to_json
 
 app = FastAPI()
 

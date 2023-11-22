@@ -1,7 +1,7 @@
 from typing import List, Dict
 from copy import deepcopy
 import json
-from py3dbp import Item, Bin, Packer
+from .py3dbp import Item, Bin, Packer
 
 
 def load_box_types(file="boxes.json") -> Dict:

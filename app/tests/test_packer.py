@@ -2,8 +2,8 @@ from typing import List
 from pathlib import Path
 import pytest
 from itertools import combinations_with_replacement
-from packer import get_best_bins, load_items_types, load_box_types, create_items, create_bins
-from py3dbp import Item, Bin, Packer
+from app.packer import get_best_bins, load_items_types, load_box_types, create_items, create_bins
+from app.py3dbp import Item, Bin, Packer
 
 TEST_FOLDER = Path(__file__).resolve().parent
 
