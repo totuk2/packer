@@ -1,6 +1,7 @@
 version: 2.1
 orbs:
   python: circleci/python@2.1.1
+  aws-cli: circleci/aws-cli@4.1.2
 jobs:
   build-and-test:
     executor:
@@ -27,11 +28,39 @@ jobs:
       - run:
           name: Zip the App
           command: zip -g ./packer.zip -r app
+      - persist_to_workspace:
+          root: .
+          paths:
+            - packer.zip
+  deploy-dev:
+    executor: aws-cli/default
+    steps:
+      - attach_workspace:
+          at: ./
+      - aws-cli/setup:
+          aws-region: AWS_DEFAULT_REGION
+          aws-access-key-id: AWS_ACCESS_KEY_ID
+          aws-secret-access-key: AWS_SECRET_KEY_ID
+      - run:
+          name: Upload to S3
+          command: aws s3 cp packer.zip s3://packer-lambda/packer.zip
+      - run:
+          name: Deploy Lambda
+          command: aws lambda update-function-code --function-name packer-lambda --s3-bucket packer-deploy --s3-key packer.zip
 
 workflows:
   build-test-and-deploy:
     jobs:
       - build-and-test:
+          context: CircleCI-packer-deploy
+          filters:
+            branches:
+              only:
+                - master
+      - deploy-dev:
+          context: CircleCI-packer-deploy
+          requires:
+            - build-and-test
           filters:
             branches:
               only:
