@@ -43,7 +43,7 @@ jobs:
           aws_secret_access_key: AWS_SECRET_KEY_ID
       - run:
           name: Upload to S3
-          command: aws s3 cp packer.zip s3://packer-lambda/packer.zip
+          command: aws s3 cp packer.zip s3://packer-deploy/packer.zip
       - run:
           name: Deploy Lambda
           command: aws lambda update-function-code --function-name packer-lambda --s3-bucket packer-deploy --s3-key packer.zip
