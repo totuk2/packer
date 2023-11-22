@@ -9,7 +9,7 @@ from .py3dbp.auxiliary_methods import dump_binlist_to_json
 
 app = FastAPI()
 
-@app.post("/packer")
+@app.post("/")
 def pack(items: Dict, bins: Dict):
     bin_types: List[Bin] = create_bins(bins)
     items_to_pack: List[Item] = create_items(items)
