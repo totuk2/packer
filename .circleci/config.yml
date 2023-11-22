@@ -26,7 +26,7 @@ jobs:
             zip -r9 ../../../../packer.zip .
       - run:
           name: Zip the App
-          command: zip -g ./function.zip -r packer
+          command: zip -g ./packer.zip -r packer
 
 workflows:
   build-test-and-deploy:
