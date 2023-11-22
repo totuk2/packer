@@ -1,12 +1,10 @@
 from fastapi.testclient import TestClient
 from api import app
-
+import pytest
 
 client = TestClient(app)
 
-
 def test_packer_api_response():
-
     response = client.post("/packer", json={
                                               "items": {
                                               "item1": {

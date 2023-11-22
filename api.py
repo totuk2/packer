@@ -1,5 +1,4 @@
 from fastapi import FastAPI
-import uvicorn
 from models import Bin, Item
 from typing import List, Dict
 
