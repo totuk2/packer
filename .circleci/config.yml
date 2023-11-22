@@ -19,6 +19,14 @@ jobs:
       - run:
           name: Test
           command: pytest
+      - run:
+          name: Zip Dependencies
+          command: |
+            cd venv/lib/python3.10/site-packages
+            zip -r9 ../../../../packer.zip .
+      - run:
+          name: Zip the App
+          command: zip -g .function.zip -r packer
 
 workflows:
   build-test-and-deploy:
